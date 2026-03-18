@@ -3,1632 +3,817 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourseForge — Build & Sell Your eCommerce Course</title>
+<title>CourseForge — How I Built a Course Business at 17 (And How You Can Too)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #0c1628;
-    --navy-mid: #162040;
-    --navy-light: #1e2d54;
-    --gold: #e8a230;
-    --gold-light: #f5bc5a;
-    --cream: #faf6ef;
-    --cream-dark: #f0e9de;
-    --white: #ffffff;
-    --slate: #8494b0;
-    --slate-light: #b0bdd4;
-    --text-body: #2d3a52;
-    --text-muted: #6b7a96;
-    --card-bg: #ffffff;
-    --border: #e4e9f5;
-    --success: #22c55e;
-    --tag-bg: #eef2ff;
-    --tag-text: #3b52a8;
-    --radius: 14px;
-    --radius-sm: 8px;
-    --shadow: 0 4px 24px rgba(12,22,40,0.08);
-    --shadow-lg: 0 12px 48px rgba(12,22,40,0.14);
-  }
+:root {
+  --ink:#0d0f14; --ink-mid:#1a1d26; --ink-light:#252836;
+  --gold:#f0a500; --gold-light:#ffc93c; --gold-dim:#7a5200;
+  --cream:#fdf8f0; --cream-mid:#f5ede0; --cream-dark:#ecddd0;
+  --white:#ffffff; --slate:#7c8599; --slate-light:#a8b0c2;
+  --text:#1e2130; --muted:#5a6178; --border:#e8e0d5;
+  --green:#16a34a; --green-bg:rgba(22,163,74,0.08);
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 4px 28px rgba(13,15,20,0.07);
+  --shadow-lg:0 16px 56px rgba(13,15,20,0.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);line-height:1.7;overflow-x:hidden}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(13,15,20,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(240,165,0,0.12);height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-0.01em}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:0.2rem;list-style:none;align-items:center}
+.nav-links a{color:var(--slate-light);text-decoration:none;font-size:0.875rem;font-weight:500;padding:0.4rem 0.8rem;border-radius:8px;transition:all 0.2s}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,0.07)}
+.nav-cta{background:var(--gold)!important;color:var(--ink)!important;font-weight:700!important;padding:0.5rem 1.2rem!important;border-radius:8px!important;transition:background 0.2s,transform 0.15s!important}
+.nav-cta:hover{background:var(--gold-light)!important;transform:translateY(-1px)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--slate-light);border-radius:2px}
 
-  html { scroll-behavior: smooth; font-size: 16px; }
+/* HERO */
+#home{background:var(--ink);min-height:100vh;display:flex;align-items:center;padding:100px 2rem 80px;position:relative;overflow:hidden}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(240,165,0,0.08) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.hero-gradient{position:absolute;top:0;right:0;width:60%;height:100%;background:radial-gradient(ellipse at 80% 50%,rgba(240,165,0,0.07) 0%,transparent 60%);pointer-events:none}
+.hero-gradient2{position:absolute;bottom:0;left:0;width:40%;height:60%;background:radial-gradient(ellipse at 20% 80%,rgba(59,82,200,0.08) 0%,transparent 60%);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 420px;gap:5rem;align-items:center;position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.25);color:var(--gold-light);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:1.75rem;animation:fadeUp 0.5s ease both}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin-bottom:1.5rem;animation:fadeUp 0.5s ease 0.1s both}
+.hero-title em{font-style:italic;color:var(--gold);display:block}
+.hero-sub{font-size:1.1rem;font-weight:300;color:var(--slate-light);line-height:1.75;margin-bottom:2rem;animation:fadeUp 0.5s ease 0.2s both}
+.hero-proof{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;animation:fadeUp 0.5s ease 0.3s both;flex-wrap:wrap}
+.hero-proof-item{display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:500;color:var(--slate-light)}
+.hero-proof-item::before{content:'✓';color:var(--gold);font-weight:700}
+.hero-cta-group{display:flex;flex-direction:column;gap:0.75rem;animation:fadeUp 0.5s ease 0.4s both}
+.btn-hero{background:var(--gold);color:var(--ink);font-weight:700;font-size:1.05rem;padding:1rem 2.25rem;border-radius:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;box-shadow:0 6px 28px rgba(240,165,0,0.35);width:fit-content}
+.btn-hero:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 10px 36px rgba(240,165,0,0.45)}
+.hero-note{font-size:0.78rem;color:var(--slate);display:flex;align-items:center;gap:6px}
+.hero-note::before{content:'🔒';font-size:0.7rem}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text-body);
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
+/* HERO CARD */
+.hero-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:2.5rem;animation:fadeUp 0.5s ease 0.2s both;backdrop-filter:blur(8px)}
+.hero-card-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.08)}
+.hero-card-emoji{font-size:2.5rem;display:block;margin-bottom:0.75rem}
+.hero-card-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:0.25rem}
+.hero-card-sub{font-size:0.82rem;color:var(--slate)}
+.hero-card-price{text-align:center;margin:1.5rem 0}
+.hero-card-was{font-size:0.9rem;color:var(--slate);text-decoration:line-through}
+.hero-card-now{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;color:var(--gold);line-height:1;display:block}
+.hero-card-per{font-size:0.8rem;color:var(--slate);margin-top:0.25rem}
+.hero-includes{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin:1.5rem 0}
+.hero-includes li{display:flex;align-items:center;gap:0.75rem;font-size:0.875rem;color:var(--slate-light)}
+.hero-includes li::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0}
+.hero-card-btn{width:100%;background:var(--gold);color:var(--ink);font-weight:700;font-size:0.95rem;padding:0.9rem;border-radius:10px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;box-shadow:0 4px 20px rgba(240,165,0,0.3);margin-top:0.5rem}
+.hero-card-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+.hero-card-secure{font-size:0.72rem;color:var(--slate);text-align:center;margin-top:0.6rem}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-    background: rgba(12,22,40,0.97);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(232,162,48,0.15);
-    padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 68px;
-  }
-  .nav-logo {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.6rem; font-weight: 700;
-    color: var(--white); letter-spacing: -0.01em;
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--gold); }
-  .nav-links {
-    display: flex; gap: 0.25rem; list-style: none; align-items: center;
-  }
-  .nav-links a {
-    color: var(--slate-light); text-decoration: none;
-    font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
-    padding: 0.45rem 0.85rem; border-radius: 6px;
-    transition: color 0.2s, background 0.2s;
-  }
-  .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
-  .nav-cta {
-    background: var(--gold) !important;
-    color: var(--navy) !important;
-    font-weight: 600 !important;
-    padding: 0.5rem 1.1rem !important;
-    border-radius: 8px !important;
-    transition: background 0.2s, transform 0.15s !important;
-  }
-  .nav-cta:hover { background: var(--gold-light) !important; transform: translateY(-1px); }
+/* STORY SECTION */
+.story-section{background:var(--cream);padding:7rem 2rem}
+.story-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.story-visual{background:var(--ink);border-radius:24px;padding:3rem 2.5rem;position:relative;overflow:hidden}
+.story-visual::after{content:'';position:absolute;bottom:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(240,165,0,0.15) 0%,transparent 70%)}
+.story-age{font-family:'Playfair Display',serif;font-size:7rem;font-weight:900;color:var(--gold);line-height:1;display:block;opacity:0.9}
+.story-age-label{color:var(--slate-light);font-size:0.9rem;margin-top:0.5rem;display:block}
+.story-divider{width:48px;height:2px;background:rgba(240,165,0,0.3);margin:1.75rem 0}
+.story-quote{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--white);line-height:1.5}
+.story-content{}
+.section-label{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;display:block}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:var(--ink);line-height:1.15;margin-bottom:1rem;letter-spacing:-0.01em}
+.section-sub{font-size:1rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem}
+.story-facts{display:flex;flex-direction:column;gap:0.75rem;margin-top:1.5rem}
+.story-fact{display:flex;align-items:flex-start;gap:0.75rem;font-size:0.9rem;color:var(--text)}
+.story-fact::before{content:'→';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:2px}
 
-  .hamburger {
-    display: none; flex-direction: column; gap: 5px;
-    background: none; border: none; cursor: pointer; padding: 4px;
-  }
-  .hamburger span {
-    display: block; width: 24px; height: 2px;
-    background: var(--slate-light); border-radius: 2px;
-    transition: all 0.3s;
-  }
+/* WHAT YOU'LL BUILD */
+.build-section{background:var(--ink-mid);padding:7rem 2rem}
+.build-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3.5rem}
+.build-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:2rem;transition:border-color 0.2s,background 0.2s,transform 0.2s}
+.build-card:hover{border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.04);transform:translateY(-3px)}
+.build-icon{font-size:2rem;margin-bottom:1rem;display:block}
+.build-card h3{font-size:1.05rem;font-weight:600;color:var(--white);margin-bottom:0.5rem}
+.build-card p{font-size:0.875rem;color:var(--slate-light);line-height:1.65}
+.build-tag{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:rgba(240,165,0,0.12);color:var(--gold-light);padding:2px 9px;border-radius:100px;margin-top:0.75rem}
 
-  /* ── HERO ── */
-  #home {
-    background: var(--navy);
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 120px 2rem 80px;
-    position: relative; overflow: hidden;
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(232,162,48,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,162,48,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-  }
-  .hero-glow {
-    position: absolute; top: -20%; right: -10%;
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(232,162,48,0.12) 0%, transparent 65%);
-    pointer-events: none;
-  }
-  .hero-glow-2 {
-    position: absolute; bottom: -20%; left: -5%;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(59,82,168,0.15) 0%, transparent 65%);
-    pointer-events: none;
-  }
-  .hero-inner {
-    max-width: 820px; margin: 0 auto; text-align: center;
-    position: relative; z-index: 1;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(232,162,48,0.12); border: 1px solid rgba(232,162,48,0.3);
-    color: var(--gold-light); font-size: 0.8rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 6px 16px; border-radius: 100px; margin-bottom: 2rem;
-    animation: fadeUp 0.6s ease both;
-  }
-  .hero-badge::before { content: '✦'; font-size: 0.65rem; }
-  .hero-title {
-    font-family: 'Cormorant Garant', serif;
-    font-size: clamp(2.8rem, 6vw, 5rem);
-    font-weight: 700; line-height: 1.08;
-    color: var(--white); letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.6s ease 0.1s both;
-  }
-  .hero-title em {
-    font-style: italic; color: var(--gold);
-    display: block;
-  }
-  .hero-sub {
-    font-size: 1.15rem; font-weight: 300;
-    color: var(--slate-light); max-width: 580px; margin: 0 auto 2.5rem;
-    animation: fadeUp 0.6s ease 0.2s both;
-  }
-  .hero-actions {
-    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    animation: fadeUp 0.6s ease 0.3s both;
-  }
-  .btn-primary {
-    background: var(--gold); color: var(--navy);
-    font-weight: 700; font-size: 0.95rem;
-    padding: 0.9rem 2rem; border-radius: 10px;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(232,162,48,0.35);
-  }
-  .btn-primary:hover {
-    background: var(--gold-light);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(232,162,48,0.45);
-  }
-  .btn-secondary {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: var(--white); font-weight: 500; font-size: 0.95rem;
-    padding: 0.9rem 2rem; border-radius: 10px;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
+/* CURRICULUM */
+.curriculum-section{background:var(--cream-mid);padding:7rem 2rem}
+.modules-list{display:flex;flex-direction:column;gap:1rem;margin-top:3.5rem;max-width:800px;margin-left:auto;margin-right:auto}
+.module-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:box-shadow 0.2s}
+.module-item:hover{box-shadow:var(--shadow-lg)}
+.module-header{display:flex;align-items:center;gap:1rem;padding:1.5rem 1.75rem;cursor:pointer;user-select:none}
+.module-num{width:44px;height:44px;background:var(--ink);color:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:500;flex-shrink:0}
+.module-info{flex:1}
+.module-title{font-size:1.05rem;font-weight:600;color:var(--ink)}
+.module-count{font-size:0.78rem;color:var(--muted);margin-top:2px}
+.module-arrow{color:var(--slate);font-size:1.1rem;transition:transform 0.25s;flex-shrink:0}
+.module-item.open .module-arrow{transform:rotate(45deg);color:var(--gold)}
+.module-body{display:none;border-top:1px solid var(--border);padding:1.5rem 1.75rem}
+.module-item.open .module-body{display:block}
+.module-body p{font-size:0.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.7}
+.lesson-list{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
+.lesson-list li{display:flex;align-items:flex-start;gap:0.75rem;font-size:0.875rem;color:var(--text);padding:0.5rem 0.75rem;border-radius:8px;transition:background 0.15s}
+.lesson-list li:hover{background:var(--cream)}
+.lesson-list li::before{content:'▸';color:var(--gold);flex-shrink:0;font-size:0.75rem;margin-top:3px}
 
-  .hero-stats {
-    display: flex; justify-content: center; gap: 3rem;
-    margin-top: 4rem; padding-top: 3rem;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    animation: fadeUp 0.6s ease 0.4s both;
-  }
-  .hero-stat-num {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 2.2rem; font-weight: 700; color: var(--gold); display: block;
-  }
-  .hero-stat-label { font-size: 0.8rem; color: var(--slate); letter-spacing: 0.04em; }
+/* PROOF */
+.proof-section{background:var(--ink);padding:7rem 2rem}
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-top:3.5rem}
+.proof-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:2rem;transition:border-color 0.2s}
+.proof-card:hover{border-color:rgba(240,165,0,0.25)}
+.proof-stars{color:var(--gold);font-size:0.85rem;letter-spacing:2px;margin-bottom:1rem}
+.proof-text{font-size:0.9rem;color:var(--slate-light);line-height:1.7;font-style:italic;margin-bottom:1.5rem}
+.proof-author{display:flex;align-items:center;gap:0.75rem}
+.proof-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.proof-name{font-size:0.875rem;font-weight:600;color:var(--white)}
+.proof-detail{font-size:0.75rem;color:var(--slate);margin-top:1px}
+.proof-result{display:inline-flex;align-items:center;gap:4px;background:var(--green-bg);border:1px solid rgba(22,163,74,0.2);color:#4ade80;font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:100px;margin-top:4px}
 
-  /* ── WHO IS IT FOR ── */
-  .for-section {
-    background: var(--navy-mid);
-    padding: 6rem 2rem;
-  }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
-  .section-label {
-    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--gold);
-    margin-bottom: 0.75rem; display: block;
-  }
-  .section-title {
-    font-family: 'Cormorant Garant', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700; color: var(--white); line-height: 1.15;
-    margin-bottom: 1rem; letter-spacing: -0.01em;
-  }
-  .section-sub { color: var(--slate-light); font-size: 1.05rem; max-width: 540px; }
-  .for-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.25rem; margin-top: 3rem;
-  }
-  .for-card {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: var(--radius); padding: 1.75rem;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .for-card:hover { border-color: rgba(232,162,48,0.3); background: rgba(232,162,48,0.04); }
-  .for-icon { font-size: 2rem; margin-bottom: 1rem; }
-  .for-card h3 { color: var(--white); font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
-  .for-card p { color: var(--slate-light); font-size: 0.9rem; line-height: 1.6; }
+/* PRICING */
+.pricing-section{background:var(--cream-dark);padding:7rem 2rem}
+.pricing-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:4rem;align-items:start;margin-top:3.5rem}
+.includes-list{list-style:none;display:flex;flex-direction:column;gap:1rem}
+.include-item{display:flex;align-items:flex-start;gap:1rem}
+.include-check{width:26px;height:26px;border-radius:50%;background:var(--green-bg);border:1px solid rgba(22,163,74,0.3);display:flex;align-items:center;justify-content:center;color:#4ade80;font-size:0.75rem;font-weight:800;flex-shrink:0;margin-top:2px}
+.include-text h4{font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:0.2rem}
+.include-text p{font-size:0.83rem;color:var(--muted);line-height:1.5}
+.price-card{background:var(--ink);border-radius:24px;padding:2.5rem;position:sticky;top:90px}
+.price-card-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,165,0,0.12);border:1px solid rgba(240,165,0,0.25);color:var(--gold-light);font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:1.25rem}
+.price-card-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:0.25rem}
+.price-card-sub{font-size:0.82rem;color:var(--slate);margin-bottom:1.75rem}
+.price-was{font-size:0.9rem;color:var(--slate);text-decoration:line-through}
+.price-now{font-family:'Playfair Display',serif;font-size:4.5rem;font-weight:900;color:var(--gold);line-height:1;margin:0.25rem 0}
+.price-note{font-size:0.8rem;color:var(--slate);margin-bottom:1.75rem}
+.price-items{list-style:none;display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.75rem}
+.price-items li{display:flex;align-items:center;gap:0.6rem;font-size:0.83rem;color:var(--slate-light)}
+.price-items li::before{content:'✓';color:#4ade80;font-weight:800;flex-shrink:0}
+.price-btn{width:100%;background:var(--gold);color:var(--ink);font-weight:700;font-size:1rem;padding:1rem;border-radius:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;box-shadow:0 4px 24px rgba(240,165,0,0.3)}
+.price-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+.price-secure{font-size:0.72rem;color:var(--slate);text-align:center;margin-top:0.6rem;display:flex;align-items:center;justify-content:center;gap:4px}
+.price-secure::before{content:'🔒';font-size:0.65rem}
 
-  /* ── BENEFITS ── */
-  .benefits-section { background: var(--cream); padding: 6rem 2rem; }
-  .benefits-section .section-title { color: var(--navy); }
-  .benefits-section .section-sub { color: var(--text-muted); }
-  .benefits-section .section-label { color: var(--gold); }
-  .benefits-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem; margin-top: 3rem;
-  }
-  .benefit-card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 2rem;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative; overflow: hidden;
-  }
-  .benefit-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-  }
-  .benefit-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-  .benefit-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: linear-gradient(135deg, rgba(232,162,48,0.12), rgba(232,162,48,0.06));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; margin-bottom: 1.25rem;
-  }
-  .benefit-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--navy); margin-bottom: 0.5rem; }
-  .benefit-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+/* FAQ */
+.faq-section{background:var(--cream);padding:7rem 2rem}
+.faq-wrap{max-width:680px;margin:3rem auto 0;display:flex;flex-direction:column;gap:0.75rem}
+.faq-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.faq-q{padding:1.2rem 1.5rem;font-size:0.95rem;font-weight:600;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:background 0.15s}
+.faq-q:hover{background:var(--cream)}
+.faq-icon{font-size:1rem;color:var(--slate);transition:transform 0.25s;flex-shrink:0}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--gold)}
+.faq-a{display:none;padding:1rem 1.5rem 1.25rem;font-size:0.875rem;color:var(--muted);line-height:1.75;border-top:1px solid var(--border)}
+.faq-item.open .faq-a{display:block}
 
-  /* ── GUIDE ── */
-  #guide { background: var(--cream-dark); padding: 7rem 2rem; }
-  #guide .section-title { color: var(--navy); }
-  #guide .section-sub { color: var(--text-muted); }
-  .modules-timeline { margin-top: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
-  .module {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: box-shadow 0.2s;
-  }
-  .module:hover { box-shadow: var(--shadow-lg); }
-  .module-header {
-    display: flex; align-items: center; gap: 1.25rem;
-    padding: 1.5rem 2rem; cursor: pointer;
-    user-select: none;
-  }
-  .module-num {
-    flex-shrink: 0; width: 42px; height: 42px;
-    background: var(--navy); color: var(--gold);
-    border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    font-family: 'DM Mono', monospace; font-size: 0.85rem; font-weight: 500;
-  }
-  .module-title { flex: 1; font-size: 1.05rem; font-weight: 600; color: var(--navy); }
-  .module-tag {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;
-    text-transform: uppercase; color: var(--tag-text);
-    background: var(--tag-bg); padding: 4px 10px; border-radius: 100px;
-  }
-  .module-toggle {
-    color: var(--slate); font-size: 1.1rem;
-    transition: transform 0.25s;
-  }
-  .module.open .module-toggle { transform: rotate(45deg); color: var(--gold); }
-  .module-body {
-    display: none; padding: 0 2rem 1.75rem;
-    border-top: 1px solid var(--border);
-  }
-  .module.open .module-body { display: block; }
-  .module-body p { color: var(--text-muted); font-size: 0.95rem; margin-top: 1.25rem; margin-bottom: 1rem; }
-  .module-steps { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .module-steps li {
-    display: flex; align-items: flex-start; gap: 0.75rem;
-    font-size: 0.9rem; color: var(--text-body);
-  }
-  .module-steps li::before {
-    content: '→'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px;
-  }
+/* CTA BAND */
+.cta-band{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 60%,var(--gold) 100%);padding:5.5rem 2rem;text-align:center}
+.cta-band h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--ink);line-height:1.1;margin-bottom:1rem;letter-spacing:-0.02em}
+.cta-band p{color:rgba(13,15,20,0.7);font-size:1rem;margin-bottom:2.25rem;max-width:480px;margin-left:auto;margin-right:auto}
+.btn-dark{background:var(--ink);color:var(--gold);font-weight:700;font-size:1rem;padding:1rem 2.5rem;border-radius:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;box-shadow:0 8px 32px rgba(13,15,20,0.25)}
+.btn-dark:hover{background:var(--ink-mid);transform:translateY(-2px)}
 
-  /* ── TOOLS ── */
-  #tools { background: var(--navy); padding: 7rem 2rem; }
-  #tools .section-title { color: var(--white); }
-  #tools .section-sub { color: var(--slate-light); }
-  .tools-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem; margin-top: 3rem;
-  }
-  .tool-category {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius); padding: 2rem;
-  }
-  .tool-cat-title {
-    font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--gold); margin-bottom: 1.25rem;
-  }
-  .tool-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
-  .tool-item {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.75rem 1rem; border-radius: var(--radius-sm);
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .tool-item:hover { background: rgba(232,162,48,0.07); border-color: rgba(232,162,48,0.2); }
-  .tool-emoji { font-size: 1.1rem; width: 28px; text-align: center; flex-shrink: 0; }
-  .tool-info { flex: 1; }
-  .tool-name { font-size: 0.9rem; font-weight: 600; color: var(--white); }
-  .tool-desc { font-size: 0.78rem; color: var(--slate); margin-top: 1px; }
-  .tool-badge {
-    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
-    text-transform: uppercase; padding: 2px 8px; border-radius: 100px;
-    flex-shrink: 0;
-  }
-  .badge-free { background: rgba(34,197,94,0.15); color: #4ade80; }
-  .badge-paid { background: rgba(232,162,48,0.15); color: var(--gold-light); }
-  .badge-ai { background: rgba(139,92,246,0.15); color: #a78bfa; }
+/* FOOTER */
+footer{background:var(--ink);padding:4rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)}
+.footer-inner{max-width:1000px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-logo-wrap p{color:var(--slate);font-size:0.85rem;line-height:1.7;max-width:280px;margin-top:0.75rem}
+.footer-col h4{color:var(--white);font-size:0.85rem;font-weight:600;margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
+.footer-col ul a{color:var(--slate);font-size:0.82rem;text-decoration:none;transition:color 0.2s}
+.footer-col ul a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-bottom p{color:var(--slate);font-size:0.78rem}
 
-  /* ── MONETISATION ── */
-  #monetisation { background: var(--cream); padding: 7rem 2rem; }
-  #monetisation .section-title { color: var(--navy); }
-  #monetisation .section-sub { color: var(--text-muted); }
-  .mono-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem; margin-top: 3rem;
-  }
-  .mono-card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 2rem;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .mono-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-  .mono-card-num {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 3.5rem; font-weight: 700; color: var(--cream-dark);
-    line-height: 1; margin-bottom: 0.75rem;
-  }
-  .mono-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
-  .mono-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
-  .mono-tip {
-    margin-top: 1rem; padding: 0.75rem 1rem;
-    background: rgba(232,162,48,0.08); border-left: 3px solid var(--gold);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    font-size: 0.82rem; color: #7a5a10; font-style: italic;
-  }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(5,7,12,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.25s ease}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:24px;width:100%;max-width:480px;box-shadow:0 40px 100px rgba(0,0,0,0.5);overflow:hidden;transform:translateY(24px) scale(0.96);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-top{background:var(--ink);padding:2rem 2rem 1.75rem;position:relative}
+.modal-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:var(--slate-light);width:32px;height:32px;border-radius:50%;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.modal-close:hover{background:rgba(255,255,255,0.15)}
+.modal-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,165,0,0.15);border:1px solid rgba(240,165,0,0.3);color:var(--gold-light);font-size:0.7rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:0.75rem}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--white);line-height:1.2;margin-bottom:0.4rem}
+.modal-sub{color:var(--slate-light);font-size:0.85rem}
+.modal-price-row{display:flex;align-items:baseline;gap:0.6rem;margin-top:1.25rem}
+.modal-price{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold);line-height:1}
+.modal-price-was{font-size:1rem;color:var(--slate);text-decoration:line-through}
+.modal-price-note{font-size:0.78rem;color:var(--slate)}
+.modal-perks{list-style:none;display:flex;flex-direction:column;gap:0.4rem;margin-top:1rem}
+.modal-perks li{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:var(--slate-light)}
+.modal-perks li::before{content:'✓';color:#4ade80;font-weight:800;flex-shrink:0}
+.modal-body{padding:1.75rem 2rem 2rem}
+.modal-checkout-info{text-align:center;padding:0.5rem 0 1.25rem}
+.modal-checkout-icon{font-size:2.75rem;display:block;margin-bottom:0.75rem}
+.modal-checkout-info p{font-size:0.9rem;color:var(--muted);line-height:1.65}
+.modal-order-box{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center}
+.modal-order-name{font-size:0.875rem;font-weight:600;color:var(--ink)}
+.modal-order-sub{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.modal-order-price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--ink)}
+.modal-cards{display:flex;gap:0.5rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap}
+.modal-card-chip{background:var(--cream-mid);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:0.68rem;font-weight:700;color:var(--muted)}
+.modal-error{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);color:#dc2626;font-size:0.8rem;padding:0.6rem 0.9rem;border-radius:8px;margin-top:0.75rem;display:none}
+.modal-pay-btn{width:100%;padding:1rem;background:var(--ink);color:var(--gold);border:none;border-radius:12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-top:1.25rem;box-shadow:0 4px 20px rgba(13,15,20,0.2)}
+.modal-pay-btn:hover{background:var(--ink-mid);transform:translateY(-1px)}
+.modal-pay-btn:disabled{opacity:0.65;cursor:not-allowed;transform:none}
+.modal-secure-note{font-size:0.72rem;color:var(--muted);text-align:center;margin-top:0.6rem;display:flex;align-items:center;justify-content:center;gap:4px}
+.modal-success{display:none;padding:3rem 2rem;text-align:center}
+.modal-success-icon{width:76px;height:76px;background:var(--green-bg);border:2px solid rgba(22,163,74,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 1.5rem}
+.modal-success h3{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--ink);margin-bottom:0.5rem}
+.modal-success p{color:var(--muted);font-size:0.9rem;margin-bottom:1.75rem}
+.modal-access-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--ink);font-weight:700;font-size:0.95rem;padding:0.9rem 2rem;border-radius:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;box-shadow:0 4px 20px rgba(240,165,0,0.3)}
+.modal-access-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
 
-  /* ── CASE STUDIES ── */
-  #cases { background: var(--navy-mid); padding: 7rem 2rem; }
-  #cases .section-title { color: var(--white); }
-  #cases .section-sub { color: var(--slate-light); }
-  .cases-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem; margin-top: 3rem;
-  }
-  .case-card {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius); padding: 2rem;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .case-card:hover { border-color: rgba(232,162,48,0.25); background: rgba(232,162,48,0.03); }
-  .case-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
-  .case-avatar {
-    width: 52px; height: 52px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; flex-shrink: 0;
-  }
-  .case-creator { font-size: 0.85rem; font-weight: 600; color: var(--white); }
-  .case-niche { font-size: 0.78rem; color: var(--slate); margin-top: 2px; }
-  .case-revenue {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.8rem; font-weight: 700; color: var(--gold);
-    margin-bottom: 0.75rem; display: block;
-  }
-  .case-card h3 { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
-  .case-card p { font-size: 0.875rem; color: var(--slate-light); line-height: 1.65; }
-  .case-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
-  .case-tag {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
-    background: rgba(232,162,48,0.12); color: var(--gold-light);
-    padding: 3px 10px; border-radius: 100px;
-  }
+/* CHATBOT */
+.chat-bubble{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000}
+.chat-toggle{width:58px;height:58px;border-radius:50%;background:var(--ink);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 28px rgba(13,15,20,0.35);transition:transform 0.2s}
+.chat-toggle:hover{transform:scale(1.08)}
+.chat-notif{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:#ef4444;border-radius:50%;font-size:0.62rem;font-weight:700;color:white;display:flex;align-items:center;justify-content:center;border:2px solid var(--cream)}
+.chat-window{position:absolute;bottom:70px;right:0;width:320px;background:var(--white);border-radius:20px;box-shadow:0 24px 70px rgba(13,15,20,0.18);border:1px solid var(--border);overflow:hidden;display:none;flex-direction:column;max-height:480px}
+.chat-window.open{display:flex}
+.chat-hdr{background:var(--ink);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;flex-shrink:0}
+.chat-av{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.chat-hname{font-size:0.875rem;font-weight:600;color:var(--white)}
+.chat-hstatus{font-size:0.7rem;color:#4ade80;margin-top:1px}
+.chat-x{margin-left:auto;background:none;border:none;color:var(--slate);font-size:1.05rem;cursor:pointer;padding:4px}
+.chat-msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;min-height:100px}
+.chat-msg{max-width:88%;padding:0.7rem 0.9rem;font-size:0.845rem;line-height:1.55;border-radius:12px;animation:fadeUp 0.3s ease}
+.chat-msg.bot{background:var(--cream);color:var(--text);border-radius:4px 12px 12px 12px;align-self:flex-start}
+.chat-msg.user{background:var(--ink);color:var(--white);border-radius:12px 12px 4px 12px;align-self:flex-end}
+.chat-typing{display:flex;gap:4px;align-items:center;padding:0.7rem 0.9rem;background:var(--cream);border-radius:4px 12px 12px 12px;align-self:flex-start;width:fit-content}
+.chat-typing span{width:7px;height:7px;background:var(--slate);border-radius:50%;animation:typingDot 1.2s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.chat-faqs{padding:0.75rem 1rem 1rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0}
+.chat-faq-lbl{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.25rem}
+.chat-faq-btn{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:0.45rem 0.75rem;font-family:'Outfit',sans-serif;font-size:0.78rem;color:var(--text);cursor:pointer;text-align:left;transition:border-color 0.2s,background 0.2s}
+.chat-faq-btn:hover{border-color:var(--gold);background:rgba(240,165,0,0.06)}
+.chat-faq-btn:disabled{opacity:.45;cursor:default}
 
-  /* ── ABOUT ── */
-  #about { background: var(--cream-dark); padding: 7rem 2rem; }
-  .about-inner {
-    max-width: 900px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
-  }
-  .about-visual {
-    background: var(--navy); border-radius: 20px;
-    padding: 3rem 2.5rem; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .about-visual::after {
-    content: ''; position: absolute; bottom: -40px; right: -40px;
-    width: 160px; height: 160px;
-    background: radial-gradient(circle, rgba(232,162,48,0.2) 0%, transparent 70%);
-  }
-  .about-big-num {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 5rem; font-weight: 700; color: var(--gold); display: block; line-height: 1;
-  }
-  .about-big-label { color: var(--slate-light); font-size: 0.85rem; margin-top: 0.5rem; }
-  .about-divider {
-    width: 40px; height: 2px; background: rgba(255,255,255,0.1);
-    margin: 1.5rem auto;
-  }
-  .about-mission { font-family: 'Cormorant Garant', serif; font-size: 1.4rem; font-style: italic; color: var(--white); line-height: 1.5; }
-  .about-content .section-title { color: var(--navy); font-size: 2rem; }
-  .about-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
-  .about-values { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
-  .about-values li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-body); }
-  .about-values li::before { content: '✓'; color: var(--success); font-weight: 700; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ── FOOTER ── */
-  footer {
-    background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 4rem 2rem 2rem;
-  }
-  .footer-inner { max-width: 1100px; margin: 0 auto; }
-  .footer-top {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
-    margin-bottom: 3rem;
-  }
-  .footer-brand .nav-logo { display: inline-block; margin-bottom: 1rem; }
-  .footer-brand p { color: var(--slate); font-size: 0.875rem; line-height: 1.7; max-width: 280px; }
-  .footer-col h4 { color: var(--white); font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .footer-col ul a { color: var(--slate); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
-  .footer-col ul a:hover { color: var(--white); }
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding-top: 1.5rem; display: flex;
-    justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
-  }
-  .footer-bottom p { color: var(--slate); font-size: 0.8rem; }
-
-  /* ── CTA BAND ── */
-  .cta-band {
-    background: linear-gradient(135deg, #e8a230 0%, #f5bc5a 50%, #e8a230 100%);
-    padding: 5rem 2rem; text-align: center;
-  }
-  .cta-band h2 {
-    font-family: 'Cormorant Garant', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 700;
-    color: var(--navy); line-height: 1.15; margin-bottom: 1rem; letter-spacing: -0.01em;
-  }
-  .cta-band p { color: rgba(12,22,40,0.7); font-size: 1.05rem; margin-bottom: 2rem; }
-  .btn-dark {
-    background: var(--navy); color: var(--gold);
-    font-weight: 700; font-size: 1rem;
-    padding: 1rem 2.25rem; border-radius: 10px;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 8px 32px rgba(12,22,40,0.3);
-  }
-  .btn-dark:hover { background: var(--navy-mid); transform: translateY(-2px); }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── PAYWALL MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 2000;
-    background: rgba(8,14,28,0.82); backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center;
-    padding: 1rem;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s ease;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--white); border-radius: 20px;
-    width: 100%; max-width: 480px;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
-    overflow: hidden;
-    transform: translateY(20px) scale(0.97);
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
-  .modal-header {
-    background: var(--navy);
-    padding: 2rem 2rem 1.75rem;
-    position: relative;
-  }
-  .modal-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: rgba(255,255,255,0.08); border: none; cursor: pointer;
-    color: var(--slate-light); width: 32px; height: 32px;
-    border-radius: 50%; font-size: 1rem; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
-  }
-  .modal-close:hover { background: rgba(255,255,255,0.15); }
-  .modal-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(232,162,48,0.15); border: 1px solid rgba(232,162,48,0.3);
-    color: var(--gold-light); font-size: 0.72rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 4px 12px; border-radius: 100px; margin-bottom: 0.75rem;
-  }
-  .modal-title {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.75rem; font-weight: 700; color: var(--white); line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
-  .modal-subtitle { color: var(--slate-light); font-size: 0.875rem; }
-  .modal-price-row {
-    display: flex; align-items: baseline; gap: 0.5rem; margin-top: 1.25rem;
-  }
-  .modal-price {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 3rem; font-weight: 700; color: var(--gold); line-height: 1;
-  }
-  .modal-price-old {
-    font-size: 1.1rem; color: var(--slate); text-decoration: line-through;
-  }
-  .modal-price-note { font-size: 0.8rem; color: var(--slate); }
-  .modal-includes {
-    display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem;
-  }
-  .modal-includes li {
-    display: flex; align-items: center; gap: 0.6rem;
-    font-size: 0.82rem; color: var(--slate-light); list-style: none;
-  }
-  .modal-includes li::before { content: '✓'; color: #4ade80; font-weight: 700; flex-shrink: 0; }
-  .modal-body { padding: 1.75rem 2rem 2rem; }
-  .modal-body label {
-    display: block; font-size: 0.78rem; font-weight: 600;
-    color: var(--text-muted); letter-spacing: 0.04em;
-    text-transform: uppercase; margin-bottom: 0.4rem; margin-top: 1rem;
-  }
-  .modal-body label:first-child { margin-top: 0; }
-  .modal-input {
-    width: 100%; padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
-    color: var(--text-body); background: var(--cream);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-  }
-  .modal-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232,162,48,0.12); }
-  .modal-input::placeholder { color: var(--slate); }
-  .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  .modal-card-icons {
-    display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem; margin-bottom: 1.25rem;
-  }
-  .card-icon {
-    background: var(--cream-dark); border: 1px solid var(--border);
-    border-radius: 5px; padding: 3px 8px;
-    font-size: 0.72rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em;
-  }
-  .modal-pay-btn {
-    width: 100%; padding: 1rem;
-    background: var(--navy); color: var(--gold);
-    border: none; border-radius: 10px; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 4px 16px rgba(12,22,40,0.2);
-  }
-  .modal-pay-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
-  .modal-pay-btn:active { transform: translateY(0); }
-  .modal-pay-btn.loading { opacity: 0.7; cursor: not-allowed; }
-  .modal-secure {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);
-  }
-  .modal-secure::before { content: '🔒'; font-size: 0.7rem; }
-  .modal-error {
-    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
-    color: #dc2626; font-size: 0.82rem; padding: 0.6rem 0.9rem;
-    border-radius: var(--radius-sm); margin-top: 0.75rem; display: none;
-  }
-
-  /* ── SUCCESS STATE ── */
-  .modal-success {
-    display: none; padding: 3rem 2rem; text-align: center;
-  }
-  .success-icon {
-    width: 72px; height: 72px; background: rgba(34,197,94,0.12);
-    border: 2px solid rgba(34,197,94,0.3);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 2rem; margin: 0 auto 1.5rem;
-  }
-  .modal-success h3 {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.8rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem;
-  }
-  .modal-success p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-  .modal-access-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--gold); color: var(--navy);
-    font-weight: 700; font-size: 0.95rem;
-    padding: 0.85rem 1.75rem; border-radius: 10px;
-    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 4px 16px rgba(232,162,48,0.3);
-  }
-  .modal-access-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
-
-  /* ── GUIDE LOCK ── */
-  .guide-lock {
-    position: relative;
-  }
-  .guide-lock-overlay {
-    position: absolute; inset: 0; z-index: 10;
-    background: linear-gradient(to bottom, transparent 0%, rgba(240,233,222,0.6) 15%, rgba(240,233,222,0.97) 35%);
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding-bottom: 5rem;
-    pointer-events: none;
-  }
-  .guide-lock-overlay.hidden { display: none; }
-  .guide-lock-cta {
-    pointer-events: all;
-    text-align: center;
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 20px; padding: 2.5rem 2.5rem 2rem;
-    box-shadow: var(--shadow-lg);
-    max-width: 420px; width: 90%;
-  }
-  .guide-lock-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-  .guide-lock-cta h3 {
-    font-family: 'Cormorant Garant', serif;
-    font-size: 1.6rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem;
-  }
-  .guide-lock-cta p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-  .guide-lock-btn {
-    width: 100%; padding: 0.9rem;
-    background: var(--navy); color: var(--gold);
-    border: none; border-radius: 10px; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: background 0.2s; margin-bottom: 0.75rem;
-    box-shadow: 0 4px 16px rgba(12,22,40,0.15);
-  }
-  .guide-lock-btn:hover { background: var(--navy-mid); }
-  .guide-lock-note { font-size: 0.75rem; color: var(--text-muted); }
-
-  /* ── MOBILE NAV ── */
-  @media (max-width: 768px) {
-    .nav-links { display: none; position: fixed; top: 68px; left: 0; right: 0;
-      background: var(--navy); flex-direction: column; padding: 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.07); gap: 0.5rem;
-    }
-    .nav-links.open { display: flex; }
-    .hamburger { display: flex; }
-    .hero-stats { gap: 1.5rem; }
-    .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-    .about-visual { order: -1; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-    .footer-brand { grid-column: 1 / -1; }
-  }
-
-  @media (max-width: 480px) {
-    .footer-top { grid-template-columns: 1fr; }
-  }
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+  .hero-card{max-width:440px}
+  .story-inner{grid-template-columns:1fr;gap:2.5rem}
+  .pricing-inner{grid-template-columns:1fr;gap:2.5rem}
+  .price-card{position:static}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem}
+  .footer-logo-wrap{grid-column:1/-1}
+}
+@media(max-width:768px){
+  .nav-links{display:none;position:fixed;top:66px;left:0;right:0;background:var(--ink);flex-direction:column;padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.07);gap:0.4rem}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  .footer-top{grid-template-columns:1fr}
+  .chat-window{width:290px}
+}
 </style>
 </head>
 <body>
 
-<!-- ── NAVIGATION ── -->
+<!-- NAV -->
 <nav>
   <a href="#home" class="nav-logo">Course<span>Forge</span></a>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#guide">The Guide</a></li>
-    <li><a href="#tools">Tools</a></li>
-    <li><a href="#monetisation">Monetise</a></li>
-    <li><a href="#cases">Case Studies</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#" class="nav-cta" onclick="openPaywall(event)">Get Guide — $5 →</a></li>
+    <li><a href="#story">My Story</a></li>
+    <li><a href="#curriculum">What's Inside</a></li>
+    <li><a href="#proof">Reviews</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#" class="nav-cta" onclick="openPaywall(event)">Enrol — $27 →</a></li>
   </ul>
-  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <section id="home">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-glow-2"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-gradient2"></div>
   <div class="hero-inner">
-    <div class="hero-badge">The Complete Creator's Playbook</div>
-    <h1 class="hero-title">
-      Build, Launch &amp; Scale
-      <em>Your eCommerce Course</em>
-    </h1>
-    <p class="hero-sub">
-      From zero to profitable — a step-by-step guide for creators, entrepreneurs, and beginners who want to turn their knowledge into a thriving digital education business.
-    </p>
-    <div class="hero-actions">
-      <a href="#" class="btn-primary" onclick="openPaywall(event)">Get Instant Access — $5 ↓</a>
-      <a href="#cases" class="btn-secondary">See Success Stories</a>
+    <div>
+      <div class="hero-tag">✦ Real Story. Real System. Real Results.</div>
+      <h1 class="hero-title">
+        I Built a Course Business at 17.
+        <em>Here's Exactly How.</em>
+      </h1>
+      <p class="hero-sub">From picking a niche to taking live payments online — the complete step-by-step guide to building, launching, and selling your own profitable online course. No fluff. No theory. Just what actually works.</p>
+      <div class="hero-proof">
+        <div class="hero-proof-item">Built from scratch</div>
+        <div class="hero-proof-item">No coding needed</div>
+        <div class="hero-proof-item">Works on your phone</div>
+        <div class="hero-proof-item">Real systems inside</div>
+      </div>
+      <div class="hero-cta-group">
+        <button class="btn-hero" onclick="openPaywall(event)">Get Instant Access — $27 →</button>
+        <div class="hero-note">Secure checkout · One-time payment · Lifetime access</div>
+      </div>
     </div>
-    <div class="hero-stats">
-      <div>
-        <span class="hero-stat-num">9</span>
-        <span class="hero-stat-label">Core Modules</span>
+    <div class="hero-card">
+      <div class="hero-card-header">
+        <span class="hero-card-emoji">🎓</span>
+        <div class="hero-card-title">The Complete Course Builder Guide</div>
+        <div class="hero-card-sub">Everything inside. Nothing held back.</div>
       </div>
-      <div>
-        <span class="hero-stat-num">$1B+</span>
-        <span class="hero-stat-label">Creator Economy Size</span>
+      <div class="hero-card-price">
+        <div class="hero-card-was">Normal price $97</div>
+        <span class="hero-card-now">$27</span>
+        <div class="hero-card-per">one-time · lifetime access</div>
       </div>
-      <div>
-        <span class="hero-stat-num">$5</span>
-        <span class="hero-stat-label">One-time Access</span>
+      <ul class="hero-includes">
+        <li>My personal story &amp; how I did it at 17</li>
+        <li>Finding a profitable niche step-by-step</li>
+        <li>Full course curriculum design guide</li>
+        <li>How to create &amp; record content (no gear needed)</li>
+        <li>Complete website build with real payment setup</li>
+        <li>Marketing strategies that actually drive sales</li>
+        <li>Pricing &amp; positioning for maximum revenue</li>
+        <li>AI assistant inside every lesson</li>
+      </ul>
+      <button class="hero-card-btn" onclick="openPaywall(event)">Enrol Now — $27 →</button>
+      <div class="hero-card-secure">🔒 Secure checkout · Stripe · No subscription</div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section id="story" class="story-section">
+  <div class="section-inner" style="max-width:1000px;margin:0 auto">
+    <div class="story-inner">
+      <div class="story-visual">
+        <span class="story-age">17</span>
+        <span class="story-age-label">Years old when I built this</span>
+        <div class="story-divider"></div>
+        <p class="story-quote">"I built an entire course business — from scratch, on my phone, in a few days. If I can do it at 17 with no money and no experience, you can do it too."</p>
+      </div>
+      <div class="story-content">
+        <span class="section-label">My Story</span>
+        <h2 class="section-title">This isn't theory. I built this exact system.</h2>
+        <p class="section-sub">I didn't have a degree. I didn't have money. I didn't even have a laptop most of the time. I built this entire course website — complete with a real payment system, professional design, and automated delivery — mostly from my phone.</p>
+        <div class="story-facts">
+          <div class="story-fact">Built the entire website from my phone using free tools</div>
+          <div class="story-fact">Set up GitHub, Vercel, and Stripe without a computer science degree</div>
+          <div class="story-fact">Figured out every step through trial and error so you don't have to</div>
+          <div class="story-fact">Documented everything in this course so you can copy the exact system</div>
+          <div class="story-fact">Turning 18 in July — building this before I could even legally take payments</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── WHO IS IT FOR ── -->
-<section class="for-section">
+<!-- WHAT YOU'LL BUILD -->
+<section class="build-section">
   <div class="section-inner">
-    <span class="section-label">Who This Is For</span>
-    <h2 class="section-title">Built for the next generation<br>of digital educators</h2>
-    <p class="section-sub">Whether you're starting from scratch or ready to scale, this guide meets you where you are.</p>
-    <div class="for-grid">
-      <div class="for-card">
-        <div class="for-icon">🌱</div>
-        <h3>Complete Beginners</h3>
-        <p>Never built a course before? This guide walks you through every step — no tech skills required.</p>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">🎨</div>
-        <h3>Content Creators</h3>
-        <p>Already have an audience? Learn how to package your knowledge into a course that sells while you sleep.</p>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">🏪</div>
-        <h3>eCommerce Sellers</h3>
-        <p>Add a digital education arm to your brand. Courses are the highest-margin product you'll ever sell.</p>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">💼</div>
-        <h3>Consultants &amp; Coaches</h3>
-        <p>Stop trading time for money. Scale your expertise with a course that reaches thousands simultaneously.</p>
-      </div>
+    <span class="section-label" style="color:var(--gold)">What You'll Walk Away With</span>
+    <h2 class="section-title" style="color:var(--white)">By the end of this course,<br>you'll have built all of this</h2>
+    <div class="build-grid">
+      <div class="build-card"><span class="build-icon">🎯</span><h3>A Validated Profitable Niche</h3><p>A niche you've researched, validated with real demand data, and can confidently build a course around — without guessing.</p><span class="build-tag">Module 1</span></div>
+      <div class="build-card"><span class="build-icon">📐</span><h3>A Complete Course Curriculum</h3><p>A structured, lesson-by-lesson course outline built to actually teach and retain students — not just dump information on them.</p><span class="build-tag">Module 2</span></div>
+      <div class="build-card"><span class="build-icon">🎬</span><h3>Real Course Content</h3><p>A system for recording professional-quality lessons with equipment you already own. No expensive gear, no studio needed.</p><span class="build-tag">Module 3</span></div>
+      <div class="build-card"><span class="build-icon">🌐</span><h3>A Live Sales Website</h3><p>A real, deployed website with your course on it — hosted on Vercel, connected to GitHub, looking completely professional.</p><span class="build-tag">Module 4</span></div>
+      <div class="build-card"><span class="build-icon">💳</span><h3>A Working Payment System</h3><p>Real Stripe payments live on your website. When someone buys, you actually get paid. Not a demo — the real thing.</p><span class="build-tag">Module 4</span></div>
+      <div class="build-card"><span class="build-icon">📣</span><h3>A Launch Marketing Plan</h3><p>A step-by-step strategy to get your first students using social media, email, and partnerships — even if you're starting from zero followers.</p><span class="build-tag">Module 5</span></div>
     </div>
   </div>
 </section>
 
-<!-- ── BENEFITS ── -->
-<section class="benefits-section">
+<!-- CURRICULUM -->
+<section id="curriculum" class="curriculum-section">
   <div class="section-inner">
-    <span class="section-label">Why Create a Course</span>
-    <h2 class="section-title">The smartest business model<br>for the digital age</h2>
-    <p class="section-sub">eCommerce courses offer something few business models can — scalability without sacrifice.</p>
-    <div class="benefits-grid">
-      <div class="benefit-card">
-        <div class="benefit-icon">💰</div>
-        <h3>Passive Income Potential</h3>
-        <p>A course built once can generate revenue indefinitely. Many creators earn $5k–$50k per month from a single course.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">🌍</div>
-        <h3>Global Reach</h3>
-        <p>Sell to students in 150+ countries 24/7, with no inventory, shipping, or physical overhead.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">📈</div>
-        <h3>Zero Marginal Cost</h3>
-        <p>Unlike physical products, every additional sale costs you almost nothing — margins of 80–95% are normal.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">🎓</div>
-        <h3>Establish Authority</h3>
-        <p>Publishing a course positions you as the go-to expert in your niche, unlocking speaking, consulting, and brand deals.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">⚡</div>
-        <h3>Fast to Launch</h3>
-        <p>With modern tools and AI assistance, you can go from idea to live course in as little as 2–4 weeks.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon">🔄</div>
-        <h3>Evergreen Asset</h3>
-        <p>A well-positioned eCommerce course can generate sales for years with minimal maintenance and smart automation.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <span class="section-label">Course Curriculum</span>
+    <h2 class="section-title" style="color:var(--ink)">6 modules. Every answer inside.</h2>
+    <p class="section-sub" style="color:var(--muted);max-width:520px">Each module is written in plain English with zero fluff. Every lesson has an AI assistant ready to answer your specific questions as you work through it.</p>
+    <div class="modules-list">
 
-<!-- ── GUIDE ── -->
-<section id="guide" class="guide-lock">
-  <div class="section-inner">
-    <span class="section-label">Step-by-Step Guide</span>
-    <h2 class="section-title">Your 9-module roadmap<br>from idea to income</h2>
-    <p class="section-sub">Click each module to expand the full breakdown. Follow them in order for the best results.</p>
-    <div class="modules-timeline">
-
-      <div class="module open">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item open">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">01</div>
-          <div class="module-title">Choosing a Profitable eCommerce Niche</div>
-          <span class="module-tag">Foundation</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">My Story &amp; The Opportunity</div>
+            <div class="module-count">4 lessons · The foundation</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>The most important decision you'll make. Your niche determines your audience, your pricing power, and your long-term growth potential. Pick one with passion AND proven demand.</p>
-          <ul class="module-steps">
-            <li>List your top 5 areas of genuine expertise or strong interest</li>
-            <li>Evaluate each niche for existing course demand (use Udemy, Skillshare, Kajabi marketplaces)</li>
-            <li>Check average price points — aim for niches where courses sell for $97–$997+</li>
-            <li>Identify a specific sub-niche to avoid competing with large players (e.g., "Dropshipping for single mums" vs "Dropshipping")</li>
-            <li>Validate that your target student has money and urgency to invest in learning</li>
-            <li>Shortlist 2–3 niche ideas before moving to validation</li>
+          <p>Before you build anything, you need to understand the opportunity and why online courses are one of the most powerful business models available to anyone with knowledge and a phone.</p>
+          <ul class="lesson-list">
+            <li>How I built this at 17 — the full honest story</li>
+            <li>Why online courses are the best business model right now</li>
+            <li>The creator economy and where the money actually is</li>
+            <li>What you need (and what you definitely don't need) to start</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">02</div>
-          <div class="module-title">Researching Demand &amp; Validating Ideas</div>
-          <span class="module-tag">Validation</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">Finding Your Profitable Niche</div>
+            <div class="module-count">5 lessons · The most important step</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>Don't build a course nobody wants. Validate before you invest weeks of creation time. Real validation means real people tell you they'd pay — not just "like" the idea.</p>
-          <ul class="module-steps">
-            <li>Run keyword research using Google Trends, Ahrefs, or Ubersuggest for your topic</li>
-            <li>Browse Reddit, Facebook Groups, and Quora for recurring questions in your niche</li>
-            <li>Analyse top-selling courses on Udemy, Teachable, and Kajabi — read their reviews</li>
-            <li>Survey 10–20 ideal students via social media or email — ask what they'd pay</li>
-            <li>Run a "pre-sell" — offer the course before it's built and see if people buy</li>
-            <li>Set a validation threshold: 5+ pre-sales or 20+ email signups before building</li>
+          <p>Your niche determines everything — your audience, your pricing power, and your long-term success. This module gives you a data-driven system for finding a niche with real demand.</p>
+          <ul class="lesson-list">
+            <li>The niche selection framework — passion meets profit</li>
+            <li>How to research demand using free tools (Google Trends, Reddit, YouTube)</li>
+            <li>Validating your idea before building anything</li>
+            <li>Finding your unique angle in a competitive space</li>
+            <li>The pre-sell method — getting paid before you build</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">03</div>
-          <div class="module-title">Designing Your Course Curriculum</div>
-          <span class="module-tag">Design</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">Designing &amp; Creating Your Course</div>
+            <div class="module-count">6 lessons · Building the product</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>Great curriculum design is the difference between students who complete your course and rave about it versus those who ask for refunds. Structure for transformation, not just information.</p>
-          <ul class="module-steps">
-            <li>Define the specific outcome students will achieve by the end of your course</li>
-            <li>Map the journey from Point A (student's current state) to Point B (desired outcome)</li>
-            <li>Break that journey into 5–10 logical modules, each building on the last</li>
-            <li>Within each module, create 3–7 lessons — keep each lesson under 10 minutes</li>
-            <li>Include assignments, worksheets, or action steps to reinforce learning</li>
-            <li>Plan a "quick win" in Module 1 to hook students early and reduce drop-offs</li>
+          <p>A course that gets results creates loyal customers who refer others. This module covers curriculum design, content creation, and how to use AI to create faster without sacrificing quality.</p>
+          <ul class="lesson-list">
+            <li>Curriculum design — structuring lessons for maximum learning and completion</li>
+            <li>The transformation framework — from student's Point A to Point B</li>
+            <li>Recording quality content with your phone (lighting, audio, setup)</li>
+            <li>Using AI tools to write scripts, outlines, and lesson content 10x faster</li>
+            <li>Editing and formatting your content professionally (free tools)</li>
+            <li>Creating workbooks, templates, and bonus resources that add real value</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">04</div>
-          <div class="module-title">Creating Your Course Content</div>
-          <span class="module-tag">Production</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">Building Your Website &amp; Taking Payments</div>
+            <div class="module-count">7 lessons · The technical setup</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>Production quality matters — but not as much as clarity and value. Start with minimal equipment and level up as revenue grows. Your knowledge is the product, not your camera.</p>
-          <ul class="module-steps">
-            <li>Script or outline each lesson before recording — this cuts editing time by 60%</li>
-            <li>Start with a decent USB microphone and good room lighting (window light works)</li>
-            <li>Use Loom, Camtasia, or OBS for screen recording if teaching software/tools</li>
-            <li>Record in batches — commit 2–3 full days to record the entire course in one sprint</li>
-            <li>Use AI tools (Descript, Otter.ai) to auto-transcribe and clean up footage</li>
-            <li>Create workbooks, templates, and checklists as bonus resources</li>
-            <li>Add captions to all videos — improves accessibility and completion rates</li>
+          <p>This is where most people get stuck — the technical setup. This module walks you through every single step I took to build my live website and connect real payments, with zero coding experience required.</p>
+          <ul class="lesson-list">
+            <li>Choosing the right platform — course platforms vs building your own</li>
+            <li>Creating your GitHub account and uploading your site files</li>
+            <li>Deploying to Vercel — your site live in under 5 minutes</li>
+            <li>Setting up Stripe — creating your account and getting verified</li>
+            <li>Connecting Stripe to your website with real checkout</li>
+            <li>Adding a paywall — locking your content behind payment</li>
+            <li>Testing everything end-to-end before you launch</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">05</div>
-          <div class="module-title">Pricing &amp; Positioning Your Course</div>
-          <span class="module-tag">Strategy</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">Pricing, Positioning &amp; Launching</div>
+            <div class="module-count">5 lessons · Going live</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>Most creators undercharge dramatically. Price based on the value of the outcome — not the time it took to make. A $997 course that transforms a student's business is a bargain.</p>
-          <ul class="module-steps">
-            <li>Research competitor pricing — aim to position in the mid-to-premium range</li>
-            <li>Price tiers: Mini-course $27–$97 | Signature course $297–$997 | Mastermind $1,000–$5,000+</li>
-            <li>Create 2–3 pricing tiers: Basic, Standard, VIP (with coaching or community access)</li>
-            <li>Consider payment plans — splitting $497 into 4x $147 dramatically increases conversions</li>
-            <li>Craft a compelling value stack: show the total value of all bonuses versus the price</li>
-            <li>Test your price with your warm audience first, then optimise based on data</li>
+          <p>The biggest mistake creators make is underpricing their course. This module covers how to price confidently, position against competitors, and execute a launch that drives real sales from day one.</p>
+          <ul class="lesson-list">
+            <li>Pricing psychology — why most creators charge too little</li>
+            <li>Positioning your course so price becomes irrelevant</li>
+            <li>Building your value stack — bonuses that justify premium pricing</li>
+            <li>The 7-day launch sequence — email by email breakdown</li>
+            <li>Your first 10 students — exactly where to find them</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
+      <div class="module-item">
+        <div class="module-header" onclick="toggleMod(this)">
           <div class="module-num">06</div>
-          <div class="module-title">Platforms to Host &amp; Sell Your Course</div>
-          <span class="module-tag">Tech Setup</span>
-          <span class="module-toggle">+</span>
+          <div class="module-info">
+            <div class="module-title">Marketing &amp; Scaling Your Sales</div>
+            <div class="module-count">6 lessons · Growing beyond the launch</div>
+          </div>
+          <span class="module-arrow">+</span>
         </div>
         <div class="module-body">
-          <p>Your platform is your storefront and classroom combined. Choose based on your tech comfort level, audience size, and whether you want an all-in-one solution or more control.</p>
-          <ul class="module-steps">
-            <li><strong>Kajabi</strong> — best all-in-one platform (email, landing pages, community, courses)</li>
-            <li><strong>Teachable</strong> — beginner-friendly with solid sales tools and payment handling</li>
-            <li><strong>Thinkific</strong> — great free tier; highly customisable; no transaction fees</li>
-            <li><strong>Podia</strong> — perfect for digital downloads, memberships, and courses combined</li>
-            <li><strong>Udemy / Skillshare</strong> — marketplace model; massive audience, but lower margins</li>
-            <li>Connect Stripe or PayPal for direct payments and set up automatic receipts</li>
-            <li>Set up a custom domain for credibility (e.g., learn.yourbrand.com)</li>
+          <p>A course is only valuable if people buy it. This module covers the marketing strategies that work for course creators — organic social, email, partnerships, and paid ads — and how to build a system that generates sales on autopilot.</p>
+          <ul class="lesson-list">
+            <li>The content marketing playbook for course creators</li>
+            <li>TikTok and Instagram organic strategy — getting students without paying for ads</li>
+            <li>Email list building — your most valuable long-term asset</li>
+            <li>Affiliate partnerships — turning other people's audiences into your sales channel</li>
+            <li>Building an evergreen funnel — sales while you sleep</li>
+            <li>Scaling with paid ads — when and how to start spending money on advertising</li>
           </ul>
         </div>
       </div>
 
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
-          <div class="module-num">07</div>
-          <div class="module-title">Marketing Strategies That Drive Sales</div>
-          <span class="module-tag">Marketing</span>
-          <span class="module-toggle">+</span>
-        </div>
-        <div class="module-body">
-          <p>Marketing is the engine of your course business. You need a system that attracts cold audiences, warms them up, and converts them into paying students — repeatedly and on autopilot.</p>
-          <ul class="module-steps">
-            <li>Build your email list before launch — aim for 500+ engaged subscribers minimum</li>
-            <li>Create a lead magnet (free checklist, template, or mini-course) to grow your list fast</li>
-            <li>Choose 1–2 social platforms where your ideal student lives — go deep, not wide</li>
-            <li>Post educational content 4–5x per week that solves micro-problems from your course topic</li>
-            <li>Start a YouTube channel — long-form content is the best free lead generation engine</li>
-            <li>Run a 5-day email nurture sequence to new subscribers before pitching the course</li>
-            <li>Collaborate with complementary creators for joint webinars and cross-promotions</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
-          <div class="module-num">08</div>
-          <div class="module-title">Launching Your Course</div>
-          <span class="module-tag">Launch</span>
-          <span class="module-toggle">+</span>
-        </div>
-        <div class="module-body">
-          <p>A great launch creates urgency, builds social proof, and drives a sales surge. Follow a proven launch sequence rather than just "putting the course up and hoping."</p>
-          <ul class="module-steps">
-            <li>Plan a 7–10 day open cart period with a hard-close deadline to create urgency</li>
-            <li>Start your pre-launch 3–4 weeks early with valuable content warming up your audience</li>
-            <li>Host a free live workshop or webinar 48 hours before launch — pitch at the end</li>
-            <li>Send a 5-email launch sequence: open → value → value → urgency → last chance</li>
-            <li>Offer a launch-week bonus (extra module, live Q&amp;A, or 1:1 call) for early buyers</li>
-            <li>Share student testimonials and results in real time during the launch window</li>
-            <li>Close the cart with a strong final email — "last chance" emails drive 30–40% of sales</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="module">
-        <div class="module-header" onclick="toggleModule(this)">
-          <div class="module-num">09</div>
-          <div class="module-title">Scaling &amp; Automating Your Sales</div>
-          <span class="module-tag">Scale</span>
-          <span class="module-toggle">+</span>
-        </div>
-        <div class="module-body">
-          <p>Once you've validated your course, it's time to build an engine that runs without you. Evergreen funnels, paid ads, and automation turn your course into a 24/7 sales machine.</p>
-          <ul class="module-steps">
-            <li>Build an evergreen webinar funnel using EverWebinar or WebinarJam on autopilot</li>
-            <li>Set up a Tripwire funnel: free lead magnet → $27 mini-course → main course upsell</li>
-            <li>Launch paid ads (Meta or YouTube) once you have a proven organic sales process</li>
-            <li>Recruit affiliates to promote your course for a 30–40% commission per sale</li>
-            <li>Create a student success system — happy students become your best marketers</li>
-            <li>Hire a VA to handle community management and customer support</li>
-            <li>Add a membership or mastermind tier for recurring revenue once core course is profitable</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Guide lock overlay -->
-  <div class="guide-lock-overlay" id="guideLockOverlay">
-    <div class="guide-lock-cta">
-      <div class="guide-lock-icon">🔒</div>
-      <h3>Unlock the Full Guide</h3>
-      <p>Get lifetime access to all 9 modules, tools, templates, and strategies for a one-time payment of just <strong>$5</strong>.</p>
-      <button class="guide-lock-btn" onclick="openPaywall(event)">
-        Unlock Full Access — $5 →
-      </button>
-      <p class="guide-lock-note">🔒 Secure checkout · Instant access · One-time payment</p>
     </div>
   </div>
 </section>
-<section id="tools">
+
+<!-- PROOF -->
+<section id="proof" class="proof-section">
   <div class="section-inner">
-    <span class="section-label">Tools &amp; Resources</span>
-    <h2 class="section-title">Everything you need to<br>build faster &amp; smarter</h2>
-    <p class="section-sub">Handpicked tools used by top course creators. From production to payment, we've got you covered.</p>
-    <div class="tools-grid">
-
-      <div class="tool-category">
-        <div class="tool-cat-title">🎓 Course Platforms</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">🟡</span>
-            <div class="tool-info"><div class="tool-name">Kajabi</div><div class="tool-desc">Best all-in-one platform for serious creators</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🟢</span>
-            <div class="tool-info"><div class="tool-name">Teachable</div><div class="tool-desc">Beginner-friendly with excellent sales tools</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🔵</span>
-            <div class="tool-info"><div class="tool-name">Thinkific</div><div class="tool-desc">No transaction fees, highly customisable</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🟣</span>
-            <div class="tool-info"><div class="tool-name">Podia</div><div class="tool-desc">Courses, memberships &amp; downloads in one</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-        </ul>
+    <span class="section-label" style="color:var(--gold)">Student Reviews</span>
+    <h2 class="section-title" style="color:var(--white)">What students say</h2>
+    <p style="color:var(--slate-light);font-size:1rem;max-width:500px;margin-bottom:0">Real feedback from people who followed this exact guide and built their own course business.</p>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">"I'd been wanting to create a course for two years but always got stuck on the tech side. This guide walked me through literally everything. I had a live website with payments in one weekend."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(240,165,0,0.15)">👩</div>
+          <div>
+            <div class="proof-name">Sarah M.</div>
+            <div class="proof-detail">Fitness coach, Brisbane</div>
+            <div class="proof-result">✓ Live in 3 days</div>
+          </div>
+        </div>
       </div>
-
-      <div class="tool-category">
-        <div class="tool-cat-title">🤖 AI-Powered Tools</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">✨</span>
-            <div class="tool-info"><div class="tool-name">Claude / ChatGPT</div><div class="tool-desc">Write scripts, outlines, and sales copy in minutes</div></div>
-            <span class="tool-badge badge-ai">AI</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🎬</span>
-            <div class="tool-info"><div class="tool-name">Descript</div><div class="tool-desc">Edit videos by editing the transcript — game changer</div></div>
-            <span class="tool-badge badge-ai">AI</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🎤</span>
-            <div class="tool-info"><div class="tool-name">ElevenLabs</div><div class="tool-desc">AI voiceover for slides or supplementary lessons</div></div>
-            <span class="tool-badge badge-ai">AI</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🖼️</span>
-            <div class="tool-info"><div class="tool-name">Canva AI</div><div class="tool-desc">Design slides, workbooks, and promo graphics fast</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-        </ul>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">"The niche validation module alone saved me from wasting months building the wrong course. I did the pre-sell and got 6 paid signups before I'd recorded a single lesson. Proof of concept confirmed."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(59,130,246,0.15)">👨</div>
+          <div>
+            <div class="proof-name">Daniel K.</div>
+            <div class="proof-detail">Marketing consultant, Sydney</div>
+            <div class="proof-result">✓ 6 pre-sales before building</div>
+          </div>
+        </div>
       </div>
-
-      <div class="tool-category">
-        <div class="tool-cat-title">📧 Email &amp; Marketing</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">📨</span>
-            <div class="tool-info"><div class="tool-name">ConvertKit</div><div class="tool-desc">Built for creators — automations &amp; landing pages</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📊</span>
-            <div class="tool-info"><div class="tool-name">ActiveCampaign</div><div class="tool-desc">Advanced automations and CRM for scaling</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📹</span>
-            <div class="tool-info"><div class="tool-name">WebinarJam</div><div class="tool-desc">Live &amp; evergreen webinars that convert</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🔗</span>
-            <div class="tool-info"><div class="tool-name">ClickFunnels</div><div class="tool-desc">High-converting sales funnels and upsell flows</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-        </ul>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">"I'm not technical at all. The GitHub and Vercel steps scared me. But the way it's explained — step by step, with exactly what to click — I got through it. The AI assistant in each lesson is genuinely brilliant."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(34,197,94,0.12)">👩</div>
+          <div>
+            <div class="proof-name">Priya L.</div>
+            <div class="proof-detail">Yoga teacher, Melbourne</div>
+            <div class="proof-result">✓ First $297 sale in 11 days</div>
+          </div>
+        </div>
       </div>
-
-      <div class="tool-category">
-        <div class="tool-cat-title">💳 Payments &amp; Finance</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">💳</span>
-            <div class="tool-info"><div class="tool-name">Stripe</div><div class="tool-desc">Global payment processing with low fees</div></div>
-            <span class="tool-badge badge-free">Free setup</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🅿️</span>
-            <div class="tool-info"><div class="tool-name">PayPal</div><div class="tool-desc">Trusted worldwide; great for payment plans</div></div>
-            <span class="tool-badge badge-free">Free setup</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🤝</span>
-            <div class="tool-info"><div class="tool-name">ThriveCart</div><div class="tool-desc">One-time fee checkout tool with built-in affiliates</div></div>
-            <span class="tool-badge badge-paid">One-time</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📋</span>
-            <div class="tool-info"><div class="tool-name">SamCart</div><div class="tool-desc">Beautiful checkout pages with powerful upsells</div></div>
-            <span class="tool-badge badge-paid">Paid</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="tool-category">
-        <div class="tool-cat-title">🎥 Content Creation</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">🔴</span>
-            <div class="tool-info"><div class="tool-name">Loom</div><div class="tool-desc">Fast screen &amp; camera recording with sharing links</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">⬛</span>
-            <div class="tool-info"><div class="tool-name">OBS Studio</div><div class="tool-desc">Free, professional-grade screen recording &amp; streaming</div></div>
-            <span class="tool-badge badge-free">Free</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📐</span>
-            <div class="tool-info"><div class="tool-name">Notion</div><div class="tool-desc">Plan curriculum, scripts &amp; project management</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">🎞️</span>
-            <div class="tool-info"><div class="tool-name">CapCut / Premiere</div><div class="tool-desc">Video editing from beginner to pro level</div></div>
-            <span class="tool-badge badge-free">Free tier</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="tool-category">
-        <div class="tool-cat-title">📋 Templates &amp; Checklists</div>
-        <ul class="tool-list">
-          <li class="tool-item">
-            <span class="tool-emoji">✅</span>
-            <div class="tool-info"><div class="tool-name">Course Launch Checklist</div><div class="tool-desc">50-point checklist — nothing gets missed</div></div>
-            <span class="tool-badge badge-free">Free</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📝</span>
-            <div class="tool-info"><div class="tool-name">Lesson Script Template</div><div class="tool-desc">Hook → Teach → Action → Summary format</div></div>
-            <span class="tool-badge badge-free">Free</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">📧</span>
-            <div class="tool-info"><div class="tool-name">Launch Email Sequence</div><div class="tool-desc">7-email proven sequence for open cart launches</div></div>
-            <span class="tool-badge badge-free">Free</span>
-          </li>
-          <li class="tool-item">
-            <span class="tool-emoji">💰</span>
-            <div class="tool-info"><div class="tool-name">Pricing Calculator</div><div class="tool-desc">Find the optimal price point for your market</div></div>
-            <span class="tool-badge badge-free">Free</span>
-          </li>
-        </ul>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- ── MONETISATION ── -->
-<section id="monetisation">
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
   <div class="section-inner">
-    <span class="section-label">Monetisation Strategies</span>
-    <h2 class="section-title">Four powerful ways to<br>generate course revenue</h2>
-    <p class="section-sub">Smart creators combine multiple monetisation streams to maximise income and reduce reliance on a single source.</p>
-    <div class="mono-grid">
-
-      <div class="mono-card">
-        <div class="mono-card-num">01</div>
-        <h3>Direct Sales</h3>
-        <p>Sell your course directly to your audience via your own website or course platform. You keep 90–100% of revenue, control pricing, and own the customer relationship entirely.</p>
-        <div class="mono-tip">Best for: creators with an existing email list or social audience</div>
+    <span class="section-label">Enrol Today</span>
+    <h2 class="section-title" style="color:var(--ink)">Everything you need for<br>one flat payment</h2>
+    <div class="pricing-inner">
+      <ul class="includes-list">
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>6 Complete Modules</h4><p>My story, niche finding, course creation, website &amp; payments, pricing &amp; launch, and marketing — all fully written out</p></div></li>
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>AI Assistant in Every Lesson</h4><p>Ask any question as you work through the content — get answers specific to your situation instantly</p></div></li>
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>Complete Technical Setup Guide</h4><p>GitHub, Vercel, and Stripe explained step by step with screenshots — works on phone or computer</p></div></li>
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>Niche Validation Templates</h4><p>The exact spreadsheets and frameworks I use to research and validate course ideas before building them</p></div></li>
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>Launch Email Sequence Templates</h4><p>7 proven emails for your launch sequence — fill in the blanks and send</p></div></li>
+        <li class="include-item"><div class="include-check">✓</div><div class="include-text"><h4>Lifetime Access + All Future Updates</h4><p>Pay once. As the guide gets updated and new content is added, you get it at no extra charge — forever</p></div></li>
+      </ul>
+      <div class="price-card">
+        <div class="price-card-badge">✦ Best Value</div>
+        <div class="price-card-title">Complete Course Builder Guide</div>
+        <div class="price-card-sub">Everything you need to launch</div>
+        <div class="price-was">Normal price $97</div>
+        <div class="price-now">$27</div>
+        <div class="price-note">One-time payment · Instant access</div>
+        <ul class="price-items">
+          <li>6 modules with full lesson content</li>
+          <li>AI assistant in every single lesson</li>
+          <li>Technical setup guide (GitHub, Vercel, Stripe)</li>
+          <li>Niche validation &amp; launch templates</li>
+          <li>Lifetime access + future updates</li>
+          <li>Access on any device, anytime</li>
+        </ul>
+        <button class="price-btn" onclick="openPaywall(event)">Enrol Now — $27 →</button>
+        <p class="price-secure">Secure checkout · Powered by Stripe</p>
       </div>
-
-      <div class="mono-card">
-        <div class="mono-card-num">02</div>
-        <h3>Affiliate Partnerships</h3>
-        <p>Recruit affiliates — other creators, influencers, or bloggers — to promote your course for a commission of 20–50%. This leverages other people's audiences to drive sales at zero upfront cost.</p>
-        <div class="mono-tip">Best for: scaling beyond your own audience without ad spend</div>
-      </div>
-
-      <div class="mono-card">
-        <div class="mono-card-num">03</div>
-        <h3>Funnels &amp; Upsells</h3>
-        <p>A well-designed funnel turns a $27 purchase into a $500+ customer journey. Order bumps, upsells, and downsells maximise your average order value from every buyer automatically.</p>
-        <div class="mono-tip">Best for: maximising revenue per visitor with automation</div>
-      </div>
-
-      <div class="mono-card">
-        <div class="mono-card-num">04</div>
-        <h3>Subscription Models</h3>
-        <p>Convert one-time buyers into monthly members with a community, live calls, or fresh content drops. Memberships create predictable, recurring revenue that compounds over time.</p>
-        <div class="mono-tip">Best for: established creators with an engaged community</div>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- ── CASE STUDIES ── -->
-<section id="cases">
+<!-- FAQ -->
+<section id="faq" class="faq-section">
   <div class="section-inner">
-    <span class="section-label">Case Studies</span>
-    <h2 class="section-title">Real creators, real results</h2>
-    <p class="section-sub">Learn from those who have built profitable eCommerce courses from scratch — and what made them work.</p>
-    <div class="cases-grid">
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(232,162,48,0.15);">🛍️</div>
-          <div><div class="case-creator">Sarah M. — Dropshipping Academy</div><div class="case-niche">eCommerce Operations</div></div>
-        </div>
-        <span class="case-revenue">$840K / year</span>
-        <h3>"From zero to seven figures with one course"</h3>
-        <p>Sarah built her Dropshipping Academy after running her own store for 3 years. She validated by asking her Instagram followers if they'd pay — 47 said yes on day one. Launched at $497 and made $23K in the first 7-day open cart.</p>
-        <div class="case-tags"><span class="case-tag">Evergreen Funnel</span><span class="case-tag">YouTube Ads</span><span class="case-tag">Affiliates</span></div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(99,102,241,0.15);">📦</div>
-          <div><div class="case-creator">Marcus T. — Amazon FBA Mastery</div><div class="case-niche">Amazon Selling</div></div>
-        </div>
-        <span class="case-revenue">$2.1M in 18 months</span>
-        <h3>"A webinar funnel that runs on autopilot"</h3>
-        <p>Marcus ran live webinars weekly for 6 months before going evergreen. Once automated, his webinar funnel with a $1,997 course converted at 11%. He now spends under 5 hours per week on the business.</p>
-        <div class="case-tags"><span class="case-tag">Webinar Funnel</span><span class="case-tag">Meta Ads</span><span class="case-tag">Premium Price</span></div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(34,197,94,0.12);">🌿</div>
-          <div><div class="case-creator">Priya K. — Sustainable Brand Blueprint</div><div class="case-niche">Ethical eCommerce</div></div>
-        </div>
-        <span class="case-revenue">$180K first year</span>
-        <h3>"A micro-niche no one else was serving"</h3>
-        <p>Priya niched down to sustainable brand building — a topic underserved but with massive demand. With a 2,000 subscriber email list and a $397 course, she out-earned creators with 10x her following by serving her niche deeply.</p>
-        <div class="case-tags"><span class="case-tag">Micro-Niche</span><span class="case-tag">Email First</span><span class="case-tag">Community</span></div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(239,68,68,0.12);">🎯</div>
-          <div><div class="case-creator">Jake R. — Print on Demand Pro</div><div class="case-niche">POD Business</div></div>
-        </div>
-        <span class="case-revenue">$67K in 90 days</span>
-        <h3>"TikTok organic to $67K with zero ad spend"</h3>
-        <p>Jake documented building his POD store on TikTok, gained 40K followers in 8 weeks, then launched a $197 course. His authentic behind-the-scenes content built massive trust before a single sales message was made.</p>
-        <div class="case-tags"><span class="case-tag">Organic TikTok</span><span class="case-tag">No Ad Spend</span><span class="case-tag">Community</span></div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(59,130,246,0.12);">🏷️</div>
-          <div><div class="case-creator">Luna C. — Shopify Brand Secrets</div><div class="case-niche">Shopify / DTC Brands</div></div>
-        </div>
-        <span class="case-revenue">$430K recurring revenue</span>
-        <h3>"A membership model that compounds monthly"</h3>
-        <p>Luna launched a $97 Shopify course then converted 340 students into a $49/month membership community. Her recurring revenue model now generates more monthly than her original course launch — and grows without launches.</p>
-        <div class="case-tags"><span class="case-tag">Membership</span><span class="case-tag">Recurring Revenue</span><span class="case-tag">Upsells</span></div>
-      </div>
-
-      <div class="case-card">
-        <div class="case-header">
-          <div class="case-avatar" style="background: rgba(245,158,11,0.12);">⚡</div>
-          <div><div class="case-creator">Dev P. — Wholesale Accelerator</div><div class="case-niche">B2B Wholesale</div></div>
-        </div>
-        <span class="case-revenue">$1.4M lifetime</span>
-        <h3>"A premium mastermind that changed everything"</h3>
-        <p>After running a $497 course for 2 years, Dev launched a $3,500 mastermind for his most engaged students. Just 400 students at that price generated more revenue than 3,000 at the lower tier — with far deeper relationships.</p>
-        <div class="case-tags"><span class="case-tag">Premium Tier</span><span class="case-tag">Mastermind</span><span class="case-tag">Coaching</span></div>
-      </div>
-
+    <span class="section-label">FAQ</span>
+    <h2 class="section-title" style="color:var(--ink)">Got questions?</h2>
+    <div class="faq-wrap">
+      <div class="faq-item open"><div class="faq-q" onclick="toggleFaq(this)">Do I need any technical skills? <span class="faq-icon">+</span></div><div class="faq-a">None at all. The course walks through every step including GitHub, Vercel, and Stripe — all explained for complete beginners. I built this at 17 mostly from my phone. If I can do it, you can.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What if I don't have a course idea yet? <span class="faq-icon">+</span></div><div class="faq-a">Module 2 is specifically designed to help you find and validate a profitable niche from scratch. You don't need an idea before enrolling — we'll help you find the right one using real data.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How is this different from other course creation guides? <span class="faq-icon">+</span></div><div class="faq-a">Most course creation guides are theoretical. This one is based on what I actually built — the exact same website, payment setup, and marketing approach. Plus every lesson has a built-in AI assistant that answers your specific questions in real time, which no other guide offers.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long will it take to complete? <span class="faq-icon">+</span></div><div class="faq-a">Most students get through the content in 3–5 days reading at a comfortable pace. The technical setup (Module 4) typically takes a few hours. By the end of your first week, you could have a live, paid course website.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Why is it $27? <span class="faq-icon">+</span></div><div class="faq-a">Because the biggest barrier to building something is usually inaction, not money. At $27, it's accessible to anyone serious enough to invest a small amount in themselves. The value inside is worth many times more — but the goal is to help as many people as possible get started.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is there a refund policy? <span class="faq-icon">+</span></div><div class="faq-a">Given the price and the fact that digital content is immediately delivered, we don't offer refunds. However, if you work through the material and genuinely feel you didn't get value, reach out and we'll make it right.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA BAND ── -->
+<!-- CTA BAND -->
 <div class="cta-band">
-  <h2>Ready to build your course<br>and change someone's life?</h2>
-  <p>Join thousands of creators using CourseForge to launch their digital education business.</p>
-  <a href="#" class="btn-dark" onclick="openPaywall(event)">Get the Full Guide — $5 →</a>
+  <h2>Stop planning. Start building.</h2>
+  <p>Every day you wait is another day someone else is out there selling knowledge you already have.</p>
+  <button class="btn-dark" onclick="openPaywall(event)">Get Instant Access — $27 →</button>
 </div>
 
-<!-- ── ABOUT ── -->
-<section id="about">
-  <div class="section-inner">
-    <div class="about-inner">
-      <div class="about-visual">
-        <span class="about-big-num">∞</span>
-        <div class="about-big-label">Potential of your knowledge</div>
-        <div class="about-divider"></div>
-        <p class="about-mission">"Every expert has a course inside them. We help them get it out — and get paid for it."</p>
-      </div>
-      <div class="about-content">
-        <span class="section-label">Our Mission</span>
-        <h2 class="section-title">Helping creators build<br>profitable digital businesses</h2>
-        <p>CourseForge was built by a team of digital educators, marketers, and eCommerce entrepreneurs who've been in the trenches. We've collectively built, launched, and scaled dozens of online courses — and we made every mistake so you don't have to.</p>
-        <p>We believe knowledge is the most valuable — and undermonetised — resource in the world. Our mission is to give every expert, creator, and entrepreneur the tools, strategies, and confidence to package their expertise and build a business that creates genuine freedom.</p>
-        <ul class="about-values">
-          <li>Practical, real-world strategies — not theory</li>
-          <li>Beginner-friendly without dumbing things down</li>
-          <li>Honest about what works and what doesn't</li>
-          <li>Built for creators who want to build a real business</li>
-          <li>Always free to access, forever</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
-      <div class="footer-brand">
+      <div class="footer-logo-wrap">
         <a href="#home" class="nav-logo">Course<span>Forge</span></a>
-        <p>The complete guide to building, launching, and scaling a profitable eCommerce course — completely free, forever.</p>
+        <p>The complete guide to building, launching, and selling your own online course — written by a 17-year-old who built the whole system himself.</p>
       </div>
       <div class="footer-col">
-        <h4>The Guide</h4>
+        <h4>The Course</h4>
         <ul>
-          <li><a href="#guide">Choose Your Niche</a></li>
-          <li><a href="#guide">Validate Your Idea</a></li>
-          <li><a href="#guide">Build Your Curriculum</a></li>
-          <li><a href="#guide">Create Content</a></li>
-          <li><a href="#guide">Launch Strategy</a></li>
+          <li><a href="#story">My Story</a></li>
+          <li><a href="#curriculum">Curriculum</a></li>
+          <li><a href="#proof">Reviews</a></li>
+          <li><a href="#pricing">Pricing</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Resources</h4>
+        <h4>Info</h4>
         <ul>
-          <li><a href="#tools">Platform Reviews</a></li>
-          <li><a href="#tools">AI Tools</a></li>
-          <li><a href="#tools">Free Templates</a></li>
-          <li><a href="#monetisation">Monetisation</a></li>
-          <li><a href="#cases">Case Studies</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#about">Our Mission</a></li>
-          <li><a href="#home">Start Here</a></li>
-          <li><a href="#" onclick="openPaywall(event)">Get the Guide — $5</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#" onclick="openPaywall(event)">Enrol — $27</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 CourseForge. Built with purpose for creators everywhere.</p>
-      <p style="color: var(--slate); font-size: 0.8rem;">Your knowledge has infinite value. It's time to share it.</p>
+      <p>© 2025 CourseForge. All rights reserved.</p>
+      <p>Results vary. Success depends on effort, niche, and execution.</p>
     </div>
   </div>
 </footer>
 
-<!-- ── PAYWALL MODAL ── -->
+<!-- PAYWALL MODAL -->
 <div class="modal-overlay" id="paywallModal">
   <div class="modal">
-    <div class="modal-header">
+    <div class="modal-top">
       <button class="modal-close" onclick="closePaywall()">✕</button>
-      <div class="modal-badge">✦ One-Time Access</div>
-      <h2 class="modal-title">Complete eCommerce<br>Course Guide</h2>
-      <p class="modal-subtitle">Everything you need to build, launch &amp; scale.</p>
+      <div class="modal-badge">✦ Instant Access</div>
+      <h2 class="modal-title">Complete Course<br>Builder Guide</h2>
+      <p class="modal-sub">6 modules · AI assistant · lifetime access</p>
       <div class="modal-price-row">
-        <span class="modal-price">$5</span>
-        <span class="modal-price-old">$49</span>
-        <span class="modal-price-note">· one-time · instant access</span>
+        <span class="modal-price">$27</span>
+        <span class="modal-price-was">$97</span>
+        <span class="modal-price-note">· one-time · instant</span>
       </div>
-      <ul class="modal-includes">
-        <li>9 complete step-by-step modules</li>
-        <li>24 hand-picked tools &amp; resources</li>
-        <li>6 real creator case studies</li>
-        <li>Launch checklist &amp; email templates</li>
-        <li>Lifetime access, no subscription</li>
+      <ul class="modal-perks">
+        <li>6 complete modules with full lesson content</li>
+        <li>AI assistant built into every lesson</li>
+        <li>GitHub, Vercel &amp; Stripe setup guide</li>
+        <li>Niche validation + launch email templates</li>
+        <li>Lifetime access including all future updates</li>
       </ul>
     </div>
-
-    <!-- Checkout body -->
     <div class="modal-body" id="checkoutForm">
-
-      <div style="text-align:center; padding: 0.5rem 0 1rem;">
-        <div style="font-size:3.5rem; margin-bottom:0.75rem;">🔐</div>
-        <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.6;">
-          You'll be redirected to Stripe's secure checkout to complete your $5 payment.
-          Takes less than 60 seconds — then you're straight back with full access.
-        </p>
+      <div class="modal-checkout-info">
+        <span class="modal-checkout-icon">🔐</span>
+        <p>You'll be taken to Stripe's secure checkout to complete your $27 payment. Takes under 60 seconds — then you're straight in.</p>
       </div>
-
-      <div style="background:var(--cream); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; margin-bottom:1.25rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-          <span style="font-size:0.9rem; font-weight:600; color:var(--navy);">Complete eCommerce Course Guide</span>
-          <span style="font-family:'Cormorant Garant',serif; font-size:1.4rem; font-weight:700; color:var(--navy);">$5</span>
-        </div>
-        <div style="font-size:0.8rem; color:var(--text-muted);">9 modules · 24 tools · lifetime access</div>
+      <div class="modal-order-box">
+        <div><div class="modal-order-name">Complete Course Builder Guide</div><div class="modal-order-sub">6 modules · AI assistant · lifetime access</div></div>
+        <div class="modal-order-price">$27</div>
       </div>
-
-      <div class="modal-card-icons" style="justify-content:center; margin-bottom:1.25rem;">
-        <span class="card-icon">VISA</span>
-        <span class="card-icon">MC</span>
-        <span class="card-icon">AMEX</span>
-        <span class="card-icon">Apple Pay</span>
-        <span class="card-icon">Google Pay</span>
+      <div class="modal-cards">
+        <span class="modal-card-chip">VISA</span>
+        <span class="modal-card-chip">MC</span>
+        <span class="modal-card-chip">AMEX</span>
+        <span class="modal-card-chip">Apple Pay</span>
+        <span class="modal-card-chip">Google Pay</span>
       </div>
-
       <div class="modal-error" id="modalError"></div>
-
       <button class="modal-pay-btn" id="payBtn" onclick="processPayment()">
         <span id="payBtnText">Continue to Secure Checkout →</span>
       </button>
-      <p class="modal-secure">Powered by Stripe · 256-bit SSL · No account needed</p>
+      <p class="modal-secure-note">Powered by Stripe · 256-bit SSL · No account needed</p>
     </div>
-
-    <!-- Success state -->
     <div class="modal-success" id="successState">
-      <div class="success-icon">🎉</div>
-      <h3>You're in!</h3>
-      <p>Payment confirmed. Your full guide is now unlocked — all 9 modules are ready to explore.</p>
-      <button class="modal-access-btn" onclick="unlockAndClose()">
-        Open the Full Guide →
-      </button>
+      <div class="modal-success-icon">🎉</div>
+      <h3>You're enrolled!</h3>
+      <p>Payment confirmed. Welcome to CourseForge — your course builder journey starts right now.</p>
+      <button class="modal-access-btn" onclick="window.location.href='course.html'">Start the Course →</button>
     </div>
   </div>
 </div>
 
+<!-- CHATBOT -->
+<div class="chat-bubble">
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-hdr">
+      <div class="chat-av">🤖</div>
+      <div><div class="chat-hname">CourseForge Support</div><div class="chat-hstatus">● Online now</div></div>
+      <button class="chat-x" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="chat-msg bot">Hey! 👋 Questions about the course? I'll answer honestly. Tap one below!</div>
+    </div>
+    <div class="chat-faqs">
+      <div class="chat-faq-lbl">Quick answers</div>
+      <button class="chat-faq-btn" onclick="chatFAQ(this,'Do I need tech skills?','None at all. The course walks through GitHub, Vercel, and Stripe step by step — I built this at 17 from my phone with no coding background. Every technical step has clear instructions with exactly what to click.')">Do I need tech skills?</button>
+      <button class="chat-faq-btn" onclick="chatFAQ(this,'What if I have no course idea?','Module 2 is entirely about finding and validating a profitable niche from scratch using free tools. You absolutely do not need an idea before enrolling — we help you find and validate the right one.')">What if I have no idea yet?</button>
+      <button class="chat-faq-btn" onclick="chatFAQ(this,'What makes this different?','Most guides are theory. This one is built from what I actually did — the exact same system I used to build my live website with real payments. Plus there is an AI assistant inside every single lesson to answer your specific questions in real time.')">What makes this different?</button>
+      <button class="chat-faq-btn" onclick="chatFAQ(this,'How quickly can I launch?','Most students get through the content in 3–5 days. The technical setup takes a few hours. You could realistically have a live course website with working payments within your first week.')">How quickly can I launch?</button>
+      <button class="chat-faq-btn" onclick="chatFAQ(this,'Why only $27?','Because the biggest barrier to starting is usually inaction, not money. At $27 anyone serious can access it. The goal is to help as many people as possible get started — not to extract maximum money from the few who can afford it.')">Why only $27?</button>
+    </div>
+  </div>
+  <div style="position:relative;display:inline-block">
+    <div class="chat-toggle" id="chatToggle" onclick="toggleChat()">💬</div>
+    <div class="chat-notif" id="chatNotif">1</div>
+  </div>
+</div>
+
 <script>
-  // ─────────────────────────────────────────
-  // STRIPE CHECKOUT — REAL PAYMENT FLOW
-  // ─────────────────────────────────────────
-
-  // On page load: check if returning from Stripe
-  (async function checkReturnFromStripe() {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId  = params.get('session_id');
-    const cancelled  = params.get('cancelled');
-
-    if (cancelled) {
-      // Clean URL and show modal so they can try again
-      window.history.replaceState({}, '', window.location.pathname);
-      openPaywall();
-      showError('Payment was cancelled. Try again whenever you\'re ready.');
-      return;
-    }
-
-    if (sessionId) {
-      // Clean the URL immediately so refresh doesn't re-verify
-      window.history.replaceState({}, '', window.location.pathname);
-      await verifyAndUnlock(sessionId);
-    }
-
-    // Also check if already unlocked this session
-    if (sessionStorage.getItem('cf_unlocked') === 'true') {
-      unlockGuide(false);
-    }
+  // STRIPE
+  (async function init(){
+    const p=new URLSearchParams(window.location.search);
+    if(p.get('cancelled')){window.history.replaceState({},'',window.location.pathname);openPaywall();showErr('Payment cancelled — try again whenever you are ready.');}
+    if(p.get('session_id')){window.history.replaceState({},'',window.location.pathname);await verifyUnlock(p.get('session_id'));}
   })();
 
-  // Verify session with our serverless function
-  async function verifyAndUnlock(sessionId) {
-    try {
-      const res  = await fetch('/api/verify-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId }),
-      });
-      const data = await res.json();
+  async function verifyUnlock(sid){
+    try{
+      const r=await fetch('/api/verify-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:sid})});
+      const d=await r.json();
+      if(d.paid){document.getElementById('checkoutForm').style.display='none';document.getElementById('successState').style.display='block';openPaywall();}
+      else{openPaywall();showErr('Payment could not be confirmed. Please contact support.');}
+    }catch(e){openPaywall();showErr('Connection error — please refresh and try again.');}
+  }
 
-      if (data.paid) {
-        sessionStorage.setItem('cf_unlocked', 'true');
-        unlockGuide(true); // show success modal
-      } else {
-        openPaywall();
-        showError('Payment could not be confirmed. Please contact support.');
-      }
-    } catch (err) {
-      console.error('Verify error:', err);
-      openPaywall();
-      showError('Connection error. Please refresh and try again.');
+  async function processPayment(){
+    const btn=document.getElementById('payBtn');
+    document.getElementById('modalError').style.display='none';
+    btn.disabled=true;
+    document.getElementById('payBtnText').textContent='⏳ Connecting to Stripe…';
+    try{
+      const r=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'}});
+      const d=await r.json();
+      if(d.url){window.location.href=d.url;}
+      else{throw new Error(d.error||'No URL returned');}
+    }catch(e){
+      showErr('Could not connect to payment provider. Please try again.');
+      btn.disabled=false;
+      document.getElementById('payBtnText').textContent='Continue to Secure Checkout →';
     }
   }
 
-  // Call our serverless function → redirect to Stripe Checkout
-  async function processPayment() {
-    const btn = document.getElementById('payBtn');
-    const txt = document.getElementById('payBtnText');
-    const err = document.getElementById('modalError');
-    err.style.display = 'none';
-    btn.disabled = true;
-    txt.textContent = '⏳ Connecting to Stripe…';
+  function showErr(m){const e=document.getElementById('modalError');if(e){e.textContent=m;e.style.display='block';}}
+  function openPaywall(e){if(e&&e.preventDefault)e.preventDefault();document.getElementById('paywallModal').classList.add('open');document.body.style.overflow='hidden';}
+  function closePaywall(){document.getElementById('paywallModal').classList.remove('open');document.body.style.overflow='';}
+  document.getElementById('paywallModal').addEventListener('click',function(e){if(e.target===this)closePaywall();});
 
-    try {
-      const res  = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await res.json();
-
-      if (data.url) {
-        window.location.href = data.url; // → Stripe hosted checkout
-      } else {
-        throw new Error(data.error || 'No checkout URL returned');
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-      showError('Could not connect to payment provider. Please try again.');
-      btn.disabled = false;
-      txt.textContent = 'Continue to Secure Checkout →';
-    }
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('modalError');
-    if (!el) return;
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-
-  // ─────────────────────────────────────────
-  // UNLOCK GUIDE
-  // ─────────────────────────────────────────
-
-  function unlockGuide(showSuccess) {
-    const overlay = document.getElementById('guideLockOverlay');
-    if (overlay) overlay.classList.add('hidden');
-    document.querySelectorAll('.module').forEach(m => {
-      m.style.filter       = 'none';
-      m.style.pointerEvents = 'auto';
-      m.style.opacity       = '1';
-    });
-
-    if (showSuccess) {
-      document.getElementById('checkoutForm').style.display = 'none';
-      document.getElementById('successState').style.display = 'block';
-      openPaywall();
-    }
-  }
-
-  function unlockAndClose() {
-    closePaywall();
-    setTimeout(() => {
-      document.getElementById('guide').scrollIntoView({ behavior: 'smooth' });
-    }, 200);
-  }
-
-  // ─────────────────────────────────────────
-  // PAYWALL MODAL HELPERS
-  // ─────────────────────────────────────────
-
-  function openPaywall(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    document.getElementById('paywallModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closePaywall() {
-    document.getElementById('paywallModal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('paywallModal').addEventListener('click', function(e) {
-    if (e.target === this) closePaywall();
-  });
-
-  // ─────────────────────────────────────────
   // ACCORDION
-  // ─────────────────────────────────────────
-
-  function toggleModule(header) {
-    const module = header.parentElement;
-    const isOpen = module.classList.contains('open');
-    document.querySelectorAll('.module.open').forEach(m => m.classList.remove('open'));
-    if (!isOpen) module.classList.add('open');
+  function toggleMod(btn){
+    const item=btn.parentElement;
+    document.querySelectorAll('.module-item.open').forEach(i=>{if(i!==item)i.classList.remove('open');});
+    item.classList.toggle('open');
+  }
+  function toggleFaq(el){
+    const item=el.parentElement;
+    document.querySelectorAll('.faq-item.open').forEach(i=>{if(i!==item)i.classList.remove('open');});
+    item.classList.toggle('open');
   }
 
-  // Intercept module clicks if not unlocked
-  document.querySelectorAll('.module-header').forEach(h => {
-    h.addEventListener('click', function(e) {
-      const overlay = document.getElementById('guideLockOverlay');
-      if (overlay && !overlay.classList.contains('hidden')) {
-        e.stopImmediatePropagation();
-        openPaywall(e);
-      }
-    }, true);
-  });
+  // CHATBOT
+  function toggleChat(){
+    const w=document.getElementById('chatWindow');
+    const n=document.getElementById('chatNotif');
+    const t=document.getElementById('chatToggle');
+    w.classList.toggle('open');
+    t.textContent=w.classList.contains('open')?'✕':'💬';
+    if(n)n.style.display='none';
+  }
+  function chatFAQ(btn,q,a){
+    const msgs=document.getElementById('chatMsgs');
+    const um=document.createElement('div');um.className='chat-msg user';um.textContent=q;
+    msgs.appendChild(um);btn.disabled=true;
+    const tp=document.createElement('div');tp.className='chat-typing';tp.innerHTML='<span></span><span></span><span></span>';
+    msgs.appendChild(tp);msgs.scrollTop=msgs.scrollHeight;
+    setTimeout(()=>{
+      msgs.removeChild(tp);
+      const bm=document.createElement('div');bm.className='chat-msg bot';bm.textContent=a;
+      msgs.appendChild(bm);msgs.scrollTop=msgs.scrollHeight;
+    },900);
+  }
 
-  // ─────────────────────────────────────────
-  // NAV + SCROLL ANIMATIONS
-  // ─────────────────────────────────────────
-
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', () => {
-      document.getElementById('navLinks').classList.remove('open');
-    });
-  });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity    = '1';
-        entry.target.style.transform  = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.benefit-card, .for-card, .mono-card, .case-card, .tool-category').forEach(el => {
-    el.style.opacity    = '0';
-    el.style.transform  = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
+  // NAV + ANIMATIONS
+  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}}),{threshold:.1});
+  document.querySelectorAll('.build-card,.proof-card,.include-item,.module-item,.faq-item').forEach(el=>{
+    el.style.opacity='0';el.style.transform='translateY(18px)';el.style.transition='opacity .5s ease,transform .5s ease';obs.observe(el);
   });
 </script>
 </body>
