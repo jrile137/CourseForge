@@ -1,0 +1,12 @@
+{
+  "name": "courseforge",
+  "version": "1.0.0",
+  "description": "CourseForge — eCommerce Course Guide with Stripe payments",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^14.21.0"
+  }
+}
