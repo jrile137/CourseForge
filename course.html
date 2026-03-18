@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CourseForge — Your Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0f14;--ink-mid:#1a1d26;
+  --gold:#f0a500;--gold-light:#ffc93c;
+  --cream:#fdf8f0;--cream-mid:#f5ede0;--cream-dark:#ecddd0;
+  --white:#fff;--slate:#7c8599;--slate-light:#a8b0c2;
+  --text:#1e2130;--muted:#5a6178;--border:#e8e0d5;
+  --green:#16a34a;--green-bg:rgba(22,163,74,.08);
+  --radius:14px;--radius-sm:9px;
+  --shadow:0 4px 24px rgba(13,15,20,.07);
+  --shadow-lg:0 16px 48px rgba(13,15,20,.13);
+  --sidebar:280px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);line-height:1.7;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:999;background:var(--ink);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;border-bottom:1px solid rgba(240,165,0,.12)}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--white);text-decoration:none}
+.topbar-logo span{color:var(--gold)}
+.topbar-progress{display:flex;align-items:center;gap:.75rem;flex:1;max-width:340px;margin:0 2rem}
+.topbar-bar{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.topbar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:3px;transition:width .4s ease;width:0%}
+.topbar-pct{font-size:.75rem;color:var(--slate-light);white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.topbar-back{color:var(--slate-light);text-decoration:none;font-size:.8rem;transition:color .2s}
+.topbar-back:hover{color:var(--white)}
+.menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--slate-light);font-size:1.25rem;padding:4px}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;padding-top:62px}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);position:fixed;top:62px;bottom:0;left:0;overflow-y:auto;z-index:100;transition:transform .3s ease}
+.sidebar-inner{padding:1rem 0 4rem}
+.sidebar-sec{}
+.s-mod-btn{width:100%;text-align:left;padding:.85rem 1.25rem;background:none;border:none;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Outfit',sans-serif;font-size:.875rem;font-weight:600;color:var(--text);transition:background .2s}
+.s-mod-btn:hover{background:var(--cream)}
+.s-mod-btn.active{background:rgba(240,165,0,.07);color:var(--ink)}
+.s-mod-icon{font-size:1rem;flex-shrink:0}
+.s-mod-count{font-size:.68rem;color:var(--slate);margin-left:auto;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.s-lessons{display:none;background:var(--cream)}
+.sidebar-sec.open .s-lessons{display:block}
+.s-lesson-btn{width:100%;text-align:left;padding:.6rem 1.25rem .6rem 2.75rem;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--muted);transition:color .2s,background .2s;display:flex;align-items:center;gap:.6rem}
+.s-lesson-btn:hover{color:var(--text);background:rgba(240,165,0,.05)}
+.s-lesson-btn.active{color:var(--ink);font-weight:600;background:rgba(240,165,0,.09)}
+.s-lesson-btn.done .ldot{background:var(--green)!important}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .2s}
+.s-lesson-btn.active .ldot{background:var(--gold)}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sidebar);padding:2.5rem 2.5rem 6rem;max-width:860px}
+
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.breadcrumb{font-size:.75rem;color:var(--slate);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb span{color:var(--gold)}
+.lesson-title{font-family:'Playfair Display',serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:900;color:var(--ink);line-height:1.1;margin-bottom:.75rem;letter-spacing:-.02em}
+.lesson-meta{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ltag{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:100px}
+.ltag-mod{background:rgba(240,165,0,.1);color:#7a5200}
+.ltag-time{background:var(--cream-dark);color:var(--muted)}
+
+/* BODY */
+.lb{font-size:.975rem;color:var(--text);line-height:1.8;max-width:700px}
+.lb h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--ink);margin:2.25rem 0 .75rem;letter-spacing:-.01em}
+.lb h4{font-size:1rem;font-weight:700;color:var(--ink);margin:1.75rem 0 .5rem}
+.lb p{margin-bottom:1.1rem}
+.lb ul,.lb ol{margin:1rem 0 1.25rem 1.5rem;display:flex;flex-direction:column;gap:.45rem}
+.lb li{font-size:.95rem}
+.lb strong{color:var(--ink);font-weight:600}
+
+.callout{background:rgba(240,165,0,.07);border-left:4px solid var(--gold);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1.1rem 1.35rem;margin:1.75rem 0}
+.callout-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a5200;margin-bottom:.4rem}
+.callout p{margin:0;font-size:.9rem}
+.tip{background:rgba(22,163,74,.07);border-left:4px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1.1rem 1.35rem;margin:1.75rem 0}
+.tip-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#15803d;margin-bottom:.4rem}
+.tip p{margin:0;font-size:.9rem}
+.warn{background:rgba(239,68,68,.07);border-left:4px solid #ef4444;border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1.1rem 1.35rem;margin:1.75rem 0}
+.warn-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#dc2626;margin-bottom:.4rem}
+.warn p{margin:0;font-size:.9rem}
+.steps-box{background:var(--ink);border-radius:var(--radius);padding:1.5rem 2rem;margin:1.75rem 0}
+.steps-box h4{color:var(--gold);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem}
+.steps-box ol{margin-left:1.25rem;display:flex;flex-direction:column;gap:.6rem}
+.steps-box li{color:var(--slate-light);font-size:.9rem}
+.steps-box li strong{color:var(--white)}
+
+/* NAV */
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:3rem;padding-top:1.75rem;border-top:1px solid var(--border);gap:1rem;flex-wrap:wrap}
+.nav-btn{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.2rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .2s;font-family:'Outfit',sans-serif}
+.nav-btn:hover{border-color:var(--gold);color:var(--ink)}
+.nav-btn.primary{background:var(--ink);color:var(--gold);border-color:var(--ink)}
+.nav-btn.primary:hover{background:var(--ink-mid)}
+.done-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;border-radius:9px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:none;color:var(--muted);transition:all .2s;font-family:'Outfit',sans-serif}
+.done-btn:hover{border-color:var(--green);color:var(--green)}
+.done-btn.done{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+
+/* WELCOME */
+.welcome{text-align:center;padding:4rem 1rem 2rem}
+.welcome-icon{font-size:4rem;margin-bottom:1.5rem;display:block}
+.welcome h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:var(--ink);margin-bottom:1rem;line-height:1.1;letter-spacing:-.02em}
+.welcome p{font-size:1rem;color:var(--muted);max-width:520px;margin:0 auto 2.5rem}
+.module-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:1rem;margin-top:2rem;text-align:left}
+.mini-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;cursor:pointer;transition:all .2s}
+.mini-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:rgba(240,165,0,.3)}
+.mini-icon{font-size:1.5rem;margin-bottom:.5rem}
+.mini-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--slate);margin-bottom:.25rem}
+.mini-title{font-size:.875rem;font-weight:600;color:var(--ink)}
+.start-btn{background:var(--gold);color:var(--ink);font-weight:700;font-size:1rem;padding:.9rem 2.25rem;border-radius:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;box-shadow:0 4px 20px rgba(240,165,0,.3);display:inline-flex;align-items:center;gap:8px}
+.start-btn:hover{background:var(--gold-light);transform:translateY(-2px)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;display:none}
+.overlay.open{display:block}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:1.5rem 1rem 5rem}
+  .topbar-progress{display:none}
+  .menu-btn{display:block}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <a href="index.html" class="topbar-logo">Course<span>Forge</span></a>
+  <div class="topbar-progress">
+    <div class="topbar-bar"><div class="topbar-fill" id="topFill"></div></div>
+    <span class="topbar-pct" id="topPct">0% complete</span>
+  </div>
+  <a href="index.html" class="topbar-back">← Back to site</a>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-inner">
+    <div class="sidebar-sec" id="sec-home">
+      <button class="s-mod-btn active" onclick="show('welcome',this,'sec-home')"><span class="s-mod-icon">🏠</span> Welcome</button>
+    </div>
+    <div class="sidebar-sec" id="sec-m1">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m1',this)"><span class="s-mod-icon">💡</span> My Story &amp; The Opportunity<span class="s-mod-count">4</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m1l1',this,'sec-m1')"><span class="ldot"></span>How I Built This at 17</button>
+        <button class="s-lesson-btn" onclick="show('m1l2',this,'sec-m1')"><span class="ldot"></span>Why Online Courses Work</button>
+        <button class="s-lesson-btn" onclick="show('m1l3',this,'sec-m1')"><span class="ldot"></span>The Creator Economy</button>
+        <button class="s-lesson-btn" onclick="show('m1l4',this,'sec-m1')"><span class="ldot"></span>What You Actually Need</button>
+      </div>
+    </div>
+    <div class="sidebar-sec" id="sec-m2">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m2',this)"><span class="s-mod-icon">🎯</span> Finding Your Niche<span class="s-mod-count">5</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m2l1',this,'sec-m2')"><span class="ldot"></span>The Niche Selection Framework</button>
+        <button class="s-lesson-btn" onclick="show('m2l2',this,'sec-m2')"><span class="ldot"></span>Researching Demand</button>
+        <button class="s-lesson-btn" onclick="show('m2l3',this,'sec-m2')"><span class="ldot"></span>Validating Your Idea</button>
+        <button class="s-lesson-btn" onclick="show('m2l4',this,'sec-m2')"><span class="ldot"></span>Finding Your Unique Angle</button>
+        <button class="s-lesson-btn" onclick="show('m2l5',this,'sec-m2')"><span class="ldot"></span>The Pre-Sell Method</button>
+      </div>
+    </div>
+    <div class="sidebar-sec" id="sec-m3">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m3',this)"><span class="s-mod-icon">🎬</span> Creating Your Course<span class="s-mod-count">6</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m3l1',this,'sec-m3')"><span class="ldot"></span>Curriculum Design</button>
+        <button class="s-lesson-btn" onclick="show('m3l2',this,'sec-m3')"><span class="ldot"></span>The Transformation Framework</button>
+        <button class="s-lesson-btn" onclick="show('m3l3',this,'sec-m3')"><span class="ldot"></span>Recording With Your Phone</button>
+        <button class="s-lesson-btn" onclick="show('m3l4',this,'sec-m3')"><span class="ldot"></span>Using AI to Create Faster</button>
+        <button class="s-lesson-btn" onclick="show('m3l5',this,'sec-m3')"><span class="ldot"></span>Editing &amp; Formatting</button>
+        <button class="s-lesson-btn" onclick="show('m3l6',this,'sec-m3')"><span class="ldot"></span>Bonuses That Add Real Value</button>
+      </div>
+    </div>
+    <div class="sidebar-sec" id="sec-m4">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m4',this)"><span class="s-mod-icon">🌐</span> Website &amp; Payments<span class="s-mod-count">7</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m4l1',this,'sec-m4')"><span class="ldot"></span>Platform Options Explained</button>
+        <button class="s-lesson-btn" onclick="show('m4l2',this,'sec-m4')"><span class="ldot"></span>Setting Up GitHub</button>
+        <button class="s-lesson-btn" onclick="show('m4l3',this,'sec-m4')"><span class="ldot"></span>Deploying to Vercel</button>
+        <button class="s-lesson-btn" onclick="show('m4l4',this,'sec-m4')"><span class="ldot"></span>Setting Up Stripe</button>
+        <button class="s-lesson-btn" onclick="show('m4l5',this,'sec-m4')"><span class="ldot"></span>Connecting Payments</button>
+        <button class="s-lesson-btn" onclick="show('m4l6',this,'sec-m4')"><span class="ldot"></span>Adding a Paywall</button>
+        <button class="s-lesson-btn" onclick="show('m4l7',this,'sec-m4')"><span class="ldot"></span>Testing Before Launch</button>
+      </div>
+    </div>
+    <div class="sidebar-sec" id="sec-m5">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m5',this)"><span class="s-mod-icon">💰</span> Pricing &amp; Launching<span class="s-mod-count">5</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m5l1',this,'sec-m5')"><span class="ldot"></span>Pricing Psychology</button>
+        <button class="s-lesson-btn" onclick="show('m5l2',this,'sec-m5')"><span class="ldot"></span>Positioning Your Course</button>
+        <button class="s-lesson-btn" onclick="show('m5l3',this,'sec-m5')"><span class="ldot"></span>Building Your Value Stack</button>
+        <button class="s-lesson-btn" onclick="show('m5l4',this,'sec-m5')"><span class="ldot"></span>The 7-Day Launch Sequence</button>
+        <button class="s-lesson-btn" onclick="show('m5l5',this,'sec-m5')"><span class="ldot"></span>Your First 10 Students</button>
+      </div>
+    </div>
+    <div class="sidebar-sec" id="sec-m6">
+      <button class="s-mod-btn" onclick="toggleSec('sec-m6',this)"><span class="s-mod-icon">📣</span> Marketing &amp; Scaling<span class="s-mod-count">6</span></button>
+      <div class="s-lessons">
+        <button class="s-lesson-btn" onclick="show('m6l1',this,'sec-m6')"><span class="ldot"></span>The Content Marketing Playbook</button>
+        <button class="s-lesson-btn" onclick="show('m6l2',this,'sec-m6')"><span class="ldot"></span>TikTok &amp; Instagram Organic</button>
+        <button class="s-lesson-btn" onclick="show('m6l3',this,'sec-m6')"><span class="ldot"></span>Building Your Email List</button>
+        <button class="s-lesson-btn" onclick="show('m6l4',this,'sec-m6')"><span class="ldot"></span>Affiliate Partnerships</button>
+        <button class="s-lesson-btn" onclick="show('m6l5',this,'sec-m6')"><span class="ldot"></span>Building an Evergreen Funnel</button>
+        <button class="s-lesson-btn" onclick="show('m6l6',this,'sec-m6')"><span class="ldot"></span>When &amp; How to Run Paid Ads</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- WELCOME -->
+<div class="panel active" id="panel-welcome">
+  <div class="welcome">
+    <span class="welcome-icon">🎉</span>
+    <h1>Welcome to CourseForge!</h1>
+    <p>You're in. All 6 modules and 33 lessons are ready. Work through them in order, or jump to what you need most right now.</p>
+    <button class="start-btn" onclick="show('m1l1',null,'sec-m1');openSec('sec-m1')">Start Module 1 →</button>
+    <div class="module-cards">
+      <div class="mini-card" onclick="show('m1l1',null,'sec-m1');openSec('sec-m1')"><div class="mini-icon">💡</div><div class="mini-num">MODULE 01</div><div class="mini-title">My Story &amp; The Opportunity</div></div>
+      <div class="mini-card" onclick="show('m2l1',null,'sec-m2');openSec('sec-m2')"><div class="mini-icon">🎯</div><div class="mini-num">MODULE 02</div><div class="mini-title">Finding Your Niche</div></div>
+      <div class="mini-card" onclick="show('m3l1',null,'sec-m3');openSec('sec-m3')"><div class="mini-icon">🎬</div><div class="mini-num">MODULE 03</div><div class="mini-title">Creating Your Course</div></div>
+      <div class="mini-card" onclick="show('m4l1',null,'sec-m4');openSec('sec-m4')"><div class="mini-icon">🌐</div><div class="mini-num">MODULE 04</div><div class="mini-title">Website &amp; Payments</div></div>
+      <div class="mini-card" onclick="show('m5l1',null,'sec-m5');openSec('sec-m5')"><div class="mini-icon">💰</div><div class="mini-num">MODULE 05</div><div class="mini-title">Pricing &amp; Launching</div></div>
+      <div class="mini-card" onclick="show('m6l1',null,'sec-m6');openSec('sec-m6')"><div class="mini-icon">📣</div><div class="mini-num">MODULE 06</div><div class="mini-title">Marketing &amp; Scaling</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- M1L1 -->
+<div class="panel" id="panel-m1l1">
+  <div class="breadcrumb">Module 01 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">How I Built This at 17</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💡 My Story</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>I want to be completely honest with you from the start. I'm 17 years old. I have no business degree, no startup funding, no mentor who handed me a blueprint. What I do have is a working website, a real payment system, and a course product — all built mostly from my phone over a few days.</p>
+    <p>This lesson isn't here to impress you. It's here to prove that the barriers between where you are and having a live, profitable course business are mostly in your head.</p>
+    <h3>How It Actually Started</h3>
+    <p>I didn't start with a grand plan. I started with a simple question: <strong>what if I could get paid for what I already know?</strong> Like most people, I spent a long time thinking about it before doing anything. The difference this time was that I decided to build the thing before I felt ready — and document everything as I went.</p>
+    <p>I used Claude (an AI assistant) to help design the website. I Googled how GitHub works. I watched one YouTube video on Vercel. I figured out Stripe by clicking through their dashboard until it made sense. None of it required a course. None of it required coding experience. It just required deciding to figure it out — one step at a time.</p>
+    <h3>The Timeline</h3>
+    <ul>
+      <li><strong>Day 1:</strong> Decided on the concept, started designing the sales page</li>
+      <li><strong>Day 2:</strong> Built the full website with paywall and payment modal</li>
+      <li><strong>Day 3:</strong> Created GitHub account, uploaded files, connected Vercel — site went live</li>
+      <li><strong>Day 4:</strong> Worked through Stripe setup entirely from Safari on my phone</li>
+      <li><strong>Day 5–7:</strong> Built out the course content and refined everything</li>
+      <li><strong>Week 2:</strong> Wrote this guide so others could follow the same path</li>
+    </ul>
+    <div class="callout"><div class="callout-lbl">💡 The Key Insight</div><p>I didn't wait until I was perfect at everything. I started badly and improved as I went. The first version of the site was ugly. The Stripe setup took three attempts. That's completely fine. Done beats perfect every single time.</p></div>
+    <h3>Why I'm Sharing All of This</h3>
+    <p>Because most course creation guides charge $500+ and make the process sound more complicated than it is. My point in building this at $27 is to prove that price should never stop someone from learning. Everything I did — including every mistake — is documented in this course so you can follow the same path faster.</p>
+    <div class="tip"><div class="tip-lbl">🎯 Your First Action</div><p>Write down one thing you know well enough to teach someone starting from scratch. It doesn't have to be business-related. It doesn't have to be unique. Just write it down — we'll validate it properly in Module 2.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m1l1" onclick="markDone('m1l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m1l2',null,'sec-m1')">Next Lesson →</button>
+  </div>
+</div>
+
+<!-- M1L2 -->
+<div class="panel" id="panel-m1l2">
+  <div class="breadcrumb">Module 01 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">Why Online Courses Work</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💡 My Story</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>Before you invest time building something, you need to understand why this model works. Online courses aren't a trend — they're one of the most structurally sound business models in existence, and the economics are unlike almost anything else.</p>
+    <h3>The Economics Are Extraordinary</h3>
+    <p>Think about a traditional product business. You buy inventory, store it, pack it, ship it, handle returns. Every single sale has a direct cost attached. Your margins might be 30–50% if you're lucky.</p>
+    <p>Now think about a course. You build it once. Every subsequent sale costs you essentially nothing — no inventory, no shipping, no manufacturing. A course that took you two weeks to create can sell for years with no additional effort. Margins of 80–95% are completely normal. This is why smart creators build courses even when they have other businesses — it's the highest-leverage thing they can do.</p>
+    <h3>Three Reasons People Buy Courses</h3>
+    <h4>1. To Save Time</h4>
+    <p>People pay to skip the learning curve. Someone who would take 6 months to figure out course creation by themselves will happily pay $27 to have it explained over a weekend. Time is the one resource nobody can get more of — and your course gives it back to them.</p>
+    <h4>2. To Avoid Costly Mistakes</h4>
+    <p>Someone who has already made every mistake in the book (you, after building this) can save a student months of wasted effort and potentially thousands in wrong decisions. That experience is genuinely valuable and smart people recognise it.</p>
+    <h4>3. To Get a Specific Outcome</h4>
+    <p>People don't buy courses — they buy the result the course promises. "Learn photography" is weak. "Take professional product photos for your Shopify store using just your iPhone" is a course people pay for. The more specific and valuable your promised outcome, the higher your price can be.</p>
+    <h3>Why Most Course Creators Fail</h3>
+    <p>Not because their content is bad. Because they skip the business fundamentals: they don't validate demand before building, they massively underprice, they have no real marketing system, and they launch once and wonder why nothing happens. This course addresses all of those mistakes directly.</p>
+    <div class="callout"><div class="callout-lbl">💡 Market Size</div><p>The global eLearning market is worth over $400 billion and growing at 14% per year. Demand for online education has never been higher. You are entering this space at exactly the right time.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m1l1',null,'sec-m1')">← Previous</button>
+    <button class="done-btn" id="db-m1l2" onclick="markDone('m1l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m1l3',null,'sec-m1')">Next →</button>
+  </div>
+</div>
+
+<!-- M1L3 -->
+<div class="panel" id="panel-m1l3">
+  <div class="breadcrumb">Module 01 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">The Creator Economy</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💡 My Story</span><span class="ltag ltag-time">⏱ 7 min</span></div>
+  <div class="lb">
+    <p>The creator economy is the ecosystem of independent people — writers, educators, coaches, YouTubers, podcasters — who monetise their knowledge and audience directly without a traditional employer or publisher in the middle. It's worth over $100 billion today and is one of the fastest-growing economic shifts in modern history.</p>
+    <h3>What Changed Everything</h3>
+    <p>Ten years ago, if you wanted to teach something professionally, you needed a publisher, a university, or a physical classroom. Gatekeepers decided who got to share knowledge and who got paid for it. Today, anyone with a phone and something worth saying can build an audience and get paid directly. The gatekeepers are gone.</p>
+    <p>Platforms like Stripe, GitHub, Vercel, Kajabi, and Gumroad now give creators the infrastructure to get paid that used to cost millions to build. Payment processing, digital delivery, course hosting — all accessible for free or near-free. The only thing left is creating something worth buying.</p>
+    <h3>The Most Profitable Position</h3>
+    <p>Within the creator economy, course creators occupy the most financially sound position. Unlike newsletters (low revenue per subscriber), YouTube (ad revenue requires millions of views), or social media (engagement doesn't directly equal income), courses have a clean, direct transaction. Someone pays money. You deliver a product. The economics are simple and scalable.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The 1,000 True Fans Rule</div><p>Kevin Kelly's famous essay argued you only need 1,000 people who genuinely value what you do to build a sustainable income. 1,000 people paying $100/year is $100,000. You don't need millions of followers. You need the right hundreds — and a product worth paying for.</p></div>
+    <h3>Why Right Now is the Best Time</h3>
+    <p>AI tools have dramatically lowered the barrier to creating quality content. TikTok's algorithm gives new creators organic reach that would have cost thousands in ads five years ago. The infrastructure is free. The audience is there. The only missing ingredient is someone deciding to start — and following through.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m1l2',null,'sec-m1')">← Previous</button>
+    <button class="done-btn" id="db-m1l3" onclick="markDone('m1l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m1l4',null,'sec-m1')">Next →</button>
+  </div>
+</div>
+
+<!-- M1L4 -->
+<div class="panel" id="panel-m1l4">
+  <div class="breadcrumb">Module 01 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">What You Actually Need to Start</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💡 My Story</span><span class="ltag ltag-time">⏱ 7 min</span></div>
+  <div class="lb">
+    <p>Most people dramatically overestimate what they need before they're "ready." Let me be direct about what you actually need — and what you definitely don't.</p>
+    <h3>What You Need</h3>
+    <ul>
+      <li><strong>Something worth teaching</strong> — a skill, experience, or knowledge that saves someone time, money, or frustration. You don't need to be the world's leading expert — just know more than a beginner.</li>
+      <li><strong>A phone or laptop</strong> — that's it for hardware</li>
+      <li><strong>Free accounts</strong> — GitHub, Vercel, and Stripe are all free to set up (covered in Module 4)</li>
+      <li><strong>2–4 weeks of focused effort</strong> — not full-time, but consistent</li>
+      <li><strong>Willingness to figure things out</strong> — most problems are one Google search from solved</li>
+    </ul>
+    <h3>What You Do NOT Need</h3>
+    <ul>
+      <li>❌ A large social media following</li>
+      <li>❌ A business degree or professional credentials</li>
+      <li>❌ Expensive equipment — a phone, decent light, and a quiet room is enough</li>
+      <li>❌ A registered business — sort this as you grow, not before you start</li>
+      <li>❌ A big budget — you can launch for the price of this guide</li>
+      <li>❌ Perfection — your first version will have flaws. Ship it anyway.</li>
+    </ul>
+    <div class="warn"><div class="warn-lbl">⚠️ The Perfectionism Trap</div><p>Waiting until everything is perfect is the number one killer of course businesses that never exist. Your first course will not be perfect. Real student feedback makes version 2 infinitely better. The only way to get that feedback is to ship version 1.</p></div>
+    <h3>The Minimum Viable Course</h3>
+    <p>You don't need 50 hours of video. The most successful first launches often start with 6–10 solid lessons, a couple of downloadable bonuses, and a crystal-clear outcome. Add more content later. The goal right now is to get something genuinely valuable in front of people as fast as possible.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Module 1 Complete</div><p>You understand the opportunity and why this model works. Module 2 is where we find your specific niche — the foundation everything else is built on. Take your time with this one.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m1l3',null,'sec-m1')">← Previous</button>
+    <button class="done-btn" id="db-m1l4" onclick="markDone('m1l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m2l1',null,'sec-m2');openSec('sec-m2')">Module 2 →</button>
+  </div>
+</div>
+
+<!-- M2L1 -->
+<div class="panel" id="panel-m2l1">
+  <div class="breadcrumb">Module 02 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">The Niche Selection Framework</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎯 Niche</span><span class="ltag ltag-time">⏱ 11 min</span></div>
+  <div class="lb">
+    <p>Your niche is the single most important decision in your course business. Get it wrong and you'll spend months building something nobody wants. Get it right and everything — marketing, pricing, student results — becomes significantly easier.</p>
+    <h3>The Three-Criteria Framework</h3>
+    <p>A profitable course niche sits at the intersection of three things. Score every idea out of 10 on each criterion — any niche scoring 7+ across all three deserves serious investigation.</p>
+    <h4>1. What You Know</h4>
+    <p>You don't need to be the world's leading expert. You need to know enough to take someone from confused to competent. If you've spent 100+ hours on a topic — through work, a hobby, personal experience, or problem-solving — you know enough to teach it to someone starting from zero.</p>
+    <h4>2. What People Are Actively Searching For</h4>
+    <p>Your passion is irrelevant if nobody is paying to learn about it. The niche needs demonstrable demand — people searching for solutions, questions flooding Reddit and Quora, YouTube videos with millions of views on the topic, Facebook groups with tens of thousands of members. We'll validate this properly in Lesson 2.</p>
+    <h4>3. What People Will Actually Pay For</h4>
+    <p>There's a crucial difference between a topic people find interesting and one they'll hand over money to learn. Topics tied to making money, saving money, improving health, advancing careers, or building relationships have strong commercial demand. Verify this before building — don't assume.</p>
+    <h3>Broad vs Specific: Why Niche Beats General Every Time</h3>
+    <p>"Photography" is a market. "iPhone photography for Etsy sellers who want better product photos" is a niche. The specific version has less competition, more passionate buyers, and higher willingness to pay — because the course speaks directly to their exact situation.</p>
+    <p>The instinct is to go broad to reach more people. The reality is the opposite: the narrower you go, the more relevant you become to the people who find you, and the higher your conversion rate.</p>
+    <h3>Coming Up With Ideas</h3>
+    <p>List every topic you could theoretically teach — don't filter yet. Consider: your job or career skills, problems you've personally solved, hobbies you've invested serious time in, things people frequently ask your advice on, skills you learned through necessity. Then score each one using the framework above.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The "I Wish Someone Had Taught Me This" Test</div><p>Think about a skill or knowledge you now have that you had to learn the hard way. Something that took you months to figure out but could be explained in hours with the right guide. That's often your best course idea — because you know exactly what the beginner struggles with.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m2l1" onclick="markDone('m2l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m2l2',null,'sec-m2')">Next →</button>
+  </div>
+</div>
+
+<!-- M2L2 -->
+<div class="panel" id="panel-m2l2">
+  <div class="breadcrumb">Module 02 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">Researching Demand With Free Tools</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎯 Niche</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>Validating demand before you build anything is the single biggest thing that separates successful course creators from people who spend months building something and then wonder why nobody buys it. Here are the best free tools to do it properly.</p>
+    <h3>Google Trends</h3>
+    <p>Go to trends.google.com and search your course topic. You want to see consistent search volume over 12+ months — ideally with a slight upward trend. A topic that peaked 3 years ago and has been declining ever since is a red flag. A topic with steady or growing interest is a green light. Compare 2–3 different niche ideas side by side to see which has stronger momentum.</p>
+    <h3>YouTube Research</h3>
+    <p>Search your topic on YouTube and look at the view counts on the top videos. Videos with 100K+ views on your specific topic prove that a large audience is actively interested. Now look at the comments — these are gold. People ask exactly what they're confused about, what they want to learn next, and what problems they're trying to solve. These comments literally tell you what to put in your course.</p>
+    <h3>Reddit and Quora</h3>
+    <p>Search your topic on Reddit and Quora. Look for: how many questions are being asked about this topic, how frequently, and how many people are engaging with the answers. A subreddit with 200,000+ members around your niche is strong proof of an engaged community. Recurring questions — "how do I get started with X?" "what's the best way to do Y?" — are the exact pain points your course should address.</p>
+    <h3>Udemy and Skillshare</h3>
+    <p>Search your course topic on Udemy. Sort results by "Most Popular." If there are courses on your topic with 10,000+ students and 4-star+ ratings, that's proof people are paying to learn this. The courses aren't competition — they're validation. Read the 3-star reviews carefully. Every complaint is an opportunity: "the instructor skipped over X" or "I wish there was more detail on Y" tells you exactly how to make a better course.</p>
+    <h3>Facebook Groups</h3>
+    <p>Search Facebook for groups related to your niche. Groups with 10,000+ active members prove a passionate community. Join 2–3 and spend a week reading posts. What do people ask most frequently? What do they struggle with? What do they celebrate? This is free market research that would cost thousands through traditional channels.</p>
+    <div class="steps-box"><h4>Your Research Checklist</h4><ol><li><strong>Google Trends:</strong> Is the topic stable or growing over 12+ months?</li><li><strong>YouTube:</strong> Are there videos with 100K+ views? What do the comments ask for?</li><li><strong>Reddit/Quora:</strong> Are there active communities around this topic?</li><li><strong>Udemy:</strong> Are people already paying to learn this? What are students saying?</li><li><strong>Facebook Groups:</strong> What recurring problems and questions come up?</li></ol></div>
+    <p>Complete this research for your top 2–3 niche ideas before moving on. The niche with the strongest signals across all five channels is your winner.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m2l1',null,'sec-m2')">← Previous</button>
+    <button class="done-btn" id="db-m2l2" onclick="markDone('m2l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m2l3',null,'sec-m2')">Next →</button>
+  </div>
+</div>
+
+<!-- M2L3 -->
+<div class="panel" id="panel-m2l3">
+  <div class="breadcrumb">Module 02 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">Validating Your Idea</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎯 Niche</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>Research tells you there's interest. Validation tells you people will pay. These are very different things. Someone enthusiastically agreeing your course sounds great is not validation. Someone handing over money before the course exists — that's validation.</p>
+    <h3>The Survey Method</h3>
+    <p>Create a simple Google Form with 5 questions and share it with people in your niche community (Facebook groups, Reddit, your existing followers). Ask: What's your biggest challenge with [topic]? How long have you struggled with it? Have you tried to learn this before — what did you find? What would solving this be worth to you? Would you pay $X for a course that solved this?</p>
+    <p>Aim for 20+ responses. If more than 50% say they'd pay your target price, that's a strong signal. If responses reveal a problem you didn't know existed — even better. Pivot your course angle to address the real pain point people reveal.</p>
+    <h3>The Conversation Method</h3>
+    <p>This is more powerful than surveys. Have genuine 15-minute conversations with 5–10 people who are your target student. Don't pitch. Just ask questions and listen. "What are you struggling with when it comes to X?" "What have you tried?" "Why didn't that work?" "If someone could walk you through solving this step by step, what would that be worth to you?"</p>
+    <p>The language people use to describe their problems is exactly the language you should use in your course marketing. You're not just validating — you're doing free copywriting research.</p>
+    <h3>The Landing Page Test</h3>
+    <p>Build a simple one-page website describing your course and its outcome (even before you've built it). Drive 50–100 people to it — through social media, a relevant Reddit post, or even a small Facebook ad spend of $20. Track how many people click "buy" or enter their email. A 2%+ conversion rate from strangers to your landing page is meaningful validation.</p>
+    <div class="warn"><div class="warn-lbl">⚠️ Don't Skip This Step</div><p>Building a full course without any validation is the most common — and most expensive — mistake in the course creation world. Two weeks of validation saves you from two months of building something nobody wants. Do the work here.</p></div>
+    <h3>What Good Validation Looks Like</h3>
+    <ul>
+      <li>Survey responses showing 50%+ would pay your target price</li>
+      <li>Conversations where people describe problems that your course solves</li>
+      <li>Landing page with 2%+ click-to-email conversion from cold traffic</li>
+      <li>Or — the gold standard — actual pre-sales before you've built the course</li>
+    </ul>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m2l2',null,'sec-m2')">← Previous</button>
+    <button class="done-btn" id="db-m2l3" onclick="markDone('m2l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m2l4',null,'sec-m2')">Next →</button>
+  </div>
+</div>
+
+<!-- M2L4 -->
+<div class="panel" id="panel-m2l4">
+  <div class="breadcrumb">Module 02 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">Finding Your Unique Angle</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎯 Niche</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>You've identified a niche with demand. Now you need to figure out why someone would choose your course over the dozens of others already in the market. This is your unique angle — and it's the difference between a course that cuts through and one that gets ignored.</p>
+    <h3>Your Angle Doesn't Have to Be Completely Unique</h3>
+    <p>It just has to be meaningfully different for a specific segment of students. Here are the most effective angles:</p>
+    <h4>Your Personal Story</h4>
+    <p>Nobody else has your exact experience. "I learned this the hard way so you don't have to" is a powerful angle. My angle in this course is that I built an entire course business at 17, from my phone. That's a real, specific, relatable story that certain people will connect with immediately.</p>
+    <h4>A Specific Student Profile</h4>
+    <p>Instead of "learn social media marketing," target "social media marketing for tradies and local service businesses." Instead of "learn to code," target "coding for absolute beginners who've tried and failed before." The course content might be similar — but the positioning speaks directly to that student's self-image and situation.</p>
+    <h4>A Specific Outcome or Timeframe</h4>
+    <p>"Launch your first Shopify store in 7 days" is a stronger hook than "learn Shopify." People buy outcomes, not learning. Make your promised outcome specific, credible, and time-bound where possible.</p>
+    <h4>A Better Teaching Method</h4>
+    <p>If existing courses are long-winded and theoretical, be the concise, practical alternative. If they're too basic, be the advanced deep-dive. If they're all video, be the text-based course for people who prefer reading. Study what's missing in the current market and fill that gap.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The Positioning Statement</div><p>Complete this sentence: "My course is for [specific person] who wants to [specific outcome] without [the thing they hate most about current solutions]." A clear positioning statement like this shapes everything — your marketing, your content, and your price.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m2l3',null,'sec-m2')">← Previous</button>
+    <button class="done-btn" id="db-m2l4" onclick="markDone('m2l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m2l5',null,'sec-m2')">Next →</button>
+  </div>
+</div>
+
+<!-- M2L5 -->
+<div class="panel" id="panel-m2l5">
+  <div class="breadcrumb">Module 02 <span>›</span> Lesson 5</div>
+  <h1 class="lesson-title">The Pre-Sell Method</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎯 Niche</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>The pre-sell is the most powerful validation method available — and almost nobody uses it because it feels uncomfortable. The idea is simple: sell your course before you build it. If people buy, you build. If they don't, you haven't wasted months of creation time.</p>
+    <h3>Why Pre-Selling Works</h3>
+    <p>It forces you to articulate your course's value clearly before you get lost in creation mode. It gives you real money to know the idea works. And the people who pre-buy become your most engaged early students — they've invested money and are genuinely motivated to see you succeed.</p>
+    <h3>How to Execute a Pre-Sell</h3>
+    <div class="steps-box"><h4>The Pre-Sell Process</h4><ol><li><strong>Write a clear description</strong> of your course — the outcome, who it's for, what's included (even in outline form), and the price</li><li><strong>Set an early-bird price</strong> — 30–50% below what you'll charge at launch. This rewards early buyers and creates urgency.</li><li><strong>Set a pre-sale deadline</strong> — "Pre-sale closes in 7 days" or "first 20 students only"</li><li><strong>Share it with your existing audience</strong> — email list, social media, relevant communities you're active in</li><li><strong>Set a minimum threshold</strong> — decide in advance: if fewer than X people buy, you'll refund and pivot. If you hit it, you're committed to delivering.</li><li><strong>Deliver the course on a specific date</strong> — communicate this clearly upfront. A firm date builds trust.</li></ol></div>
+    <h3>What to Do When You Make Pre-Sales</h3>
+    <p>First — celebrate. Then get to work. Email your pre-buyers and tell them exactly when they'll get access. Ask them what they're most hoping to learn. Their answers will shape your content. These students are invested in your success — treat them like the VIPs they are.</p>
+    <h3>Handling the "I'll Build It Then Sell" Temptation</h3>
+    <p>Most creators want to build first because selling an unfinished product feels wrong. It's not. You're selling a promise and a timeline — which is how most professional services work. Film commissions are paid before the movie is made. Book advances are paid before the book is written. Course pre-sales are completely normal and respected in the industry.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Module 2 Complete</div><p>You now have a validated niche, a unique angle, and ideally some pre-sales to prove the concept. Module 3 is where you actually build the course — with a system that makes it faster than you think.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m2l4',null,'sec-m2')">← Previous</button>
+    <button class="done-btn" id="db-m2l5" onclick="markDone('m2l5',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l1',null,'sec-m3');openSec('sec-m3')">Module 3 →</button>
+  </div>
+</div>
+
+<!-- M3L1 -->
+<div class="panel" id="panel-m3l1">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">Curriculum Design That Gets Results</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 11 min</span></div>
+  <div class="lb">
+    <p>A well-designed curriculum is the difference between students who complete your course and rave about it — and students who watch two lessons, lose motivation, and ask for refunds. Great curriculum design isn't about covering everything you know. It's about guiding students to a specific outcome as efficiently as possible.</p>
+    <h3>Start With the Outcome, Not the Content</h3>
+    <p>Before you write a single lesson, define the exact state your student will be in when they finish your course. Not "they'll understand photography better" — that's vague. "They'll have published their first 10 product photos to their online store using only their iPhone" — that's specific. Everything in your course should be a direct step toward that outcome. If a lesson doesn't move the student closer to the outcome, cut it.</p>
+    <h3>The A to B Structure</h3>
+    <p><strong>Point A</strong> is where your student is now — confused, stuck, missing a specific skill. <strong>Point B</strong> is where they want to be. Your course is the bridge. Map the exact journey from A to B, then break that journey into stages. Each module covers one stage. Each lesson covers one step within that stage.</p>
+    <h3>Module and Lesson Structure</h3>
+    <p>For most courses, 5–8 modules with 3–6 lessons each is the sweet spot. Too few modules and the content feels shallow. Too many and students feel overwhelmed before they start. Aim for lessons that can be consumed in 5–15 minutes. Short lessons have higher completion rates — students feel progress, which drives them to keep going.</p>
+    <h3>The Quick Win Principle</h3>
+    <p>Design your first module so that students experience a genuine win within their first 30 minutes of the course. Not a massive transformation — a small, concrete achievement that proves progress is possible. This hooks them in and dramatically reduces early drop-off. My Module 1 win is the mindset shift that removes the "I'm not ready" barrier. What's yours?</p>
+    <h3>Progressive Complexity</h3>
+    <p>Each lesson should build logically on the previous one. Never introduce a concept before the student has the foundation to understand it. This sounds obvious but most course creators violate it constantly — they teach advanced tactics before establishing the fundamentals, leaving beginners confused and frustrated.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The Outline Method</div><p>Write your complete course outline on a single page before recording anything. Module names, lesson names, and one sentence describing what the student can do after each lesson. If you can't summarise a lesson's value in one sentence, the lesson isn't focused enough. Refine the outline until every lesson is crisp, then record.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m3l1" onclick="markDone('m3l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l2',null,'sec-m3')">Next →</button>
+  </div>
+</div>
+
+<!-- M3L2 -->
+<div class="panel" id="panel-m3l2">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">The Transformation Framework</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>The most important thing your course does is not teach content — it creates transformation. Students who feel genuinely transformed become your best marketing. They leave reviews, refer friends, and come back to buy your next course. Here's how to build transformation into the structure of your course.</p>
+    <h3>What Transformation Actually Means</h3>
+    <p>Transformation is the measurable shift in what a student can do, believe, or feel after completing your course. It's the difference between "I understand the theory of budgeting" and "I have a budget set up, I'm tracking my expenses, and I have $500 more in savings this month." One is information. The other is transformation.</p>
+    <h3>The Four Layers of Student Transformation</h3>
+    <h4>1. Knowledge</h4>
+    <p>What they now know that they didn't before. This is the most basic layer and most courses stop here. It's not enough on its own.</p>
+    <h4>2. Skill</h4>
+    <p>What they can now do that they couldn't before. This requires practice and application — not just watching. Build exercises, assignments, and action steps into your course to create skill.</p>
+    <h4>3. Belief</h4>
+    <p>What they now believe about themselves and what's possible. Mindset shifts are often the most valuable part of a course. "I now believe I can actually do this" is a profound transformation that information alone can't create.</p>
+    <h4>4. Behaviour</h4>
+    <p>What they now consistently do differently. This is the highest level of transformation — when the course changes actual daily behaviour. Habit formation, accountability systems, and community can all support this layer.</p>
+    <h3>Designing for Transformation</h3>
+    <p>After every lesson, ask yourself: "What can the student do differently right now as a result of this lesson?" If the answer is "nothing yet — they just learned something," add an action step. Small, concrete actions after each lesson accumulate into real-world results. Real-world results create testimonials. Testimonials sell your next cohort.</p>
+    <div class="callout"><div class="callout-lbl">💡 The Testimonial Formula</div><p>Great testimonials follow this structure: "Before this course, I [problem]. After completing [module/lesson], I [specific result]." Design your course so that students naturally experience moments that generate this kind of testimony. Those moments are when transformation is happening.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m3l1',null,'sec-m3')">← Previous</button>
+    <button class="done-btn" id="db-m3l2" onclick="markDone('m3l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l3',null,'sec-m3')">Next →</button>
+  </div>
+</div>
+
+<!-- M3L3 -->
+<div class="panel" id="panel-m3l3">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">Recording With Your Phone</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>You do not need a studio, a DSLR camera, or a professional microphone to record a great course. The phone in your pocket records 4K video. The biggest production quality issues — bad audio, bad lighting — can be solved for free. Here's how.</p>
+    <h3>The Single Most Important Factor: Audio</h3>
+    <p>Students will forgive average video quality. They will not forgive poor audio. If your voice sounds muffled, echoey, or hard to understand, they'll stop watching — no matter how good your content is. Fix audio first.</p>
+    <p>The cheapest fix is recording in a small room with soft furnishings — a bedroom with curtains and carpet absorbs echo far better than a hard, empty room. Close the windows and doors. Record with your phone held 20–30cm from your mouth. The built-in iPhone microphone at close range is genuinely good.</p>
+    <p>If you want to upgrade: a RØDE Wireless GO II (~$300) or even a $25 lapel microphone that plugs into your phone's headphone jack will dramatically improve audio quality.</p>
+    <h3>Lighting That Looks Professional</h3>
+    <p>Natural light from a window is the best free lighting available. Sit facing the window — not with it behind you (that creates a silhouette). Soft, even daylight is flattering and professional-looking. Film during daytime and you'll naturally have good light.</p>
+    <p>If you need to film at night or your space doesn't have good natural light, a $30 ring light from Amazon solves the problem completely. This is the only piece of "equipment" worth buying before you've made money from your course.</p>
+    <h3>Camera Setup</h3>
+    <p>Set your phone horizontally for video lessons (landscape orientation). Use the rear camera — it's significantly better quality than the front. Prop it against something or use a $15 phone stand to keep it stable. Frame yourself with your eyes roughly in the upper third of the frame. Leave headroom — don't cut off the top of your head.</p>
+    <h3>Recording Modes</h3>
+    <h4>Talking-Head Video</h4>
+    <p>You on camera, talking directly to students. Best for introductions, mindset lessons, and anything that benefits from a personal connection. Works great for course previews and welcome videos.</p>
+    <h4>Screen Recording</h4>
+    <p>Recording your phone or laptop screen while narrating. Best for step-by-step technical instructions — setting up GitHub, navigating Stripe, building a website. Use Loom (free) on desktop or the built-in screen recording on iPhone.</p>
+    <h4>Slides with Voiceover</h4>
+    <p>A presentation with your narration over it. Use Canva (free) to build clean slides. Best for explaining frameworks, showing data, or teaching concepts that benefit from visual structure. Lower production barrier — no camera needed.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The Batch Recording Method</div><p>Don't record one lesson at a time. Block out 2–3 full days and record all your lessons in batches. Start each day by reviewing your lesson outlines. By day 2 you'll be much more comfortable on camera and recordings will flow faster. Most creators report that the first few recordings are rough and the rest are easy — batch recording gets you through the rough ones quickly.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m3l2',null,'sec-m3')">← Previous</button>
+    <button class="done-btn" id="db-m3l3" onclick="markDone('m3l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l4',null,'sec-m3')">Next →</button>
+  </div>
+</div>
+
+<!-- M3L4 -->
+<div class="panel" id="panel-m3l4">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">Using AI to Create Content 10x Faster</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>AI tools have changed the economics of course creation permanently. Tasks that used to take days now take hours. Content that used to require a professional writer can now be drafted by anyone with a clear idea of what they want to communicate. Here's how to use AI without losing your authentic voice.</p>
+    <h3>What AI is Good At (and What It Isn't)</h3>
+    <p><strong>AI is excellent for:</strong> generating first drafts, expanding bullet points into paragraphs, creating quiz questions from lesson content, writing email subject lines, generating lesson title variations, creating social media post ideas from your content, and summarising long content into key points.</p>
+    <p><strong>AI is not good at:</strong> providing your personal story and unique experience, knowing the specific struggles of your particular student, replacing your genuine expertise and perspective. Use AI to eliminate blank-page paralysis and speed up the mechanical parts of creation — not to replace what only you can provide.</p>
+    <h3>The Lesson Script Workflow</h3>
+    <p>Open Claude or ChatGPT and paste in your lesson title and 5–6 bullet points of what you want to cover. Ask it to "expand this into a structured 600-word lesson in a conversational, practical tone." Review the output, replace anything that doesn't sound like you, add personal examples and stories, and use the result as your recording script. This process takes 10 minutes instead of 90.</p>
+    <h3>Creating Supporting Materials With AI</h3>
+    <p>For every lesson, ask AI to generate: a 5-question quiz to test comprehension, a one-page summary of the key points, a list of action steps the student should take, and common questions someone might have after reading this lesson. These become the bonus materials in your course — and they take 5 minutes to generate.</p>
+    <h3>Tools Worth Knowing</h3>
+    <ul>
+      <li><strong>Claude (claude.ai)</strong> — excellent for writing, particularly for maintaining consistent tone and following detailed instructions</li>
+      <li><strong>ChatGPT (chat.openai.com)</strong> — versatile, great for brainstorming and iteration</li>
+      <li><strong>Descript</strong> — records your lessons and automatically transcribes them; edit the video by editing the text transcript. Game-changing for editing.</li>
+      <li><strong>Canva AI</strong> — generates slide decks, workbook layouts, and promotional graphics from text prompts</li>
+      <li><strong>Otter.ai</strong> — transcribes audio recordings, great for turning voice notes into written content</li>
+    </ul>
+    <div class="warn"><div class="warn-lbl">⚠️ Keep Your Voice</div><p>AI-generated content has a recognisable flatness if you use it unedited. Always rewrite AI drafts in your own voice, add your personal examples and experiences, and remove any language that sounds corporate or generic. Students buy your perspective — not a polished but hollow script.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m3l3',null,'sec-m3')">← Previous</button>
+    <button class="done-btn" id="db-m3l4" onclick="markDone('m3l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l5',null,'sec-m3')">Next →</button>
+  </div>
+</div>
+
+<!-- M3L5 -->
+<div class="panel" id="panel-m3l5">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 5</div>
+  <h1 class="lesson-title">Editing &amp; Formatting (Free Tools)</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>You don't need Adobe Premiere or Final Cut Pro to produce professional-quality course content. These free tools do everything a beginner course creator needs — without the learning curve or price tag.</p>
+    <h3>Video Editing</h3>
+    <h4>CapCut (Free — Mobile &amp; Desktop)</h4>
+    <p>The best free video editor for beginners. Drag and drop interface, automatic captions, music library, and hundreds of templates. Used by millions of content creators. Start here.</p>
+    <h4>DaVinci Resolve (Free — Desktop)</h4>
+    <p>Professional-grade video editor, completely free. Overkill for most course creators — but if you want granular control over colour, audio, and effects as you grow, this is the tool to learn.</p>
+    <h4>iMovie (Free — Apple only)</h4>
+    <p>Already on your iPhone or Mac. Simple, fast, surprisingly capable for basic editing. Good enough for a first course.</p>
+    <h3>Screen Recording</h3>
+    <h4>Loom (Free tier — Desktop &amp; Mobile)</h4>
+    <p>Records your screen and camera simultaneously, uploads automatically to the cloud, and gives you a shareable link immediately. Perfect for technical walkthrough lessons. The free tier allows up to 25 videos of up to 5 minutes each — more than enough to start.</p>
+    <h4>iPhone Built-In Screen Recording</h4>
+    <p>Control Centre → Screen Recording. Records everything on your screen with your voiceover. No downloads required. The output quality is excellent.</p>
+    <h3>Slides and Workbooks</h3>
+    <h4>Canva (Free tier)</h4>
+    <p>The best free design tool for course creators. Use it to create slide decks for screen recording lessons, PDF workbooks with exercises and templates, promotional graphics for your course sales page, and social media content. The free tier has everything you need. Their "Course Slides" and "Workbook" templates are excellent starting points.</p>
+    <h3>Audio Editing</h3>
+    <h4>Audacity (Free — Desktop)</h4>
+    <p>Open-source audio editing. Use the "Noise Reduction" effect to remove background hum, and the "Normalize" effect to even out volume levels. Even 5 minutes of basic audio cleanup makes a meaningful difference to how professional your lessons sound.</p>
+    <div class="tip"><div class="tip-lbl">🎯 Don't Over-Edit</div><p>Beginner course creators often spend more time editing than recording. Aim for "good enough" — clear audio, stable video, no major mistakes. Watching yourself on screen is uncomfortable at first. You'll notice things students will never notice. Edit for flow and clarity, not perfection.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m3l4',null,'sec-m3')">← Previous</button>
+    <button class="done-btn" id="db-m3l5" onclick="markDone('m3l5',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m3l6',null,'sec-m3')">Next →</button>
+  </div>
+</div>
+
+<!-- M3L6 -->
+<div class="panel" id="panel-m3l6">
+  <div class="breadcrumb">Module 03 <span>›</span> Lesson 6</div>
+  <h1 class="lesson-title">Bonuses That Add Real Value</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🎬 Creating</span><span class="ltag ltag-time">⏱ 7 min</span></div>
+  <div class="lb">
+    <p>Bonuses do two things: they increase perceived value (making your price feel like a bargain) and they serve students who learn differently or want to go deeper. The key is creating bonuses that genuinely extend the value of your core content — not filler that makes the offer look bigger.</p>
+    <h3>Bonuses That Actually Matter</h3>
+    <h4>Templates and Swipe Files</h4>
+    <p>Pre-built documents students can fill in rather than starting from scratch. A launch email template, a curriculum planning spreadsheet, a niche research framework. These save hours of work and are perceived as extremely high value because they're immediately usable. Create them by documenting the tools and frameworks you already use.</p>
+    <h4>Checklists</h4>
+    <p>Step-by-step lists that ensure students don't miss anything critical. "Pre-launch checklist," "tech setup checklist," "recording day checklist." Simple to create — take each lesson's action steps and format them into a printable PDF using Canva.</p>
+    <h4>Case Studies</h4>
+    <p>Real examples of the outcome your course delivers. Your own story is a case study. Other students' results become case studies as you accumulate them. These are powerful because they prove the outcome is real, not theoretical.</p>
+    <h4>Resource Lists</h4>
+    <p>Curated lists of tools, books, channels, or communities relevant to your topic. Easy to create, genuinely useful, and saves students hours of research. This guide includes a resource list for every module — notice how it adds value without requiring additional teaching.</p>
+    <h3>What Makes a Bad Bonus</h3>
+    <p>A bonus is bad when it's unrelated to the core course content, or when it's just more of the same thing without adding a new dimension of value. "50 extra video lessons" as a bonus doesn't add value — it adds overwhelm. Three highly relevant, immediately useful documents add more value than 10 extra hours of video.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Module 3 Complete</div><p>You now know how to design a curriculum, record content with what you have, use AI to create faster, edit professionally with free tools, and build bonuses worth paying for. Module 4 is where we build your live website with real payments — the technical stuff made simple.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m3l5',null,'sec-m3')">← Previous</button>
+    <button class="done-btn" id="db-m3l6" onclick="markDone('m3l6',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l1',null,'sec-m4');openSec('sec-m4')">Module 4 →</button>
+  </div>
+</div>
+
+<!-- M4L1 -->
+<div class="panel" id="panel-m4l1">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">Platform Options Explained</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>You have two fundamentally different options for hosting and selling your course: a dedicated course platform, or building your own website. Each has real trade-offs that depend on where you are in your journey.</p>
+    <h3>Option A: Dedicated Course Platforms</h3>
+    <p>Platforms like Teachable, Thinkific, Kajabi, and Podia handle everything for you — course hosting, video player, checkout, email list, student management. You upload your content and they take care of the infrastructure.</p>
+    <p><strong>Pros:</strong> Fast to set up (hours, not days), student-facing experience is polished, handles payments and delivery automatically, no technical knowledge required.</p>
+    <p><strong>Cons:</strong> Monthly fees ($39–$199+), limited customisation of your brand, platform could change pricing or terms, transaction fees on some plans, you don't fully own the infrastructure.</p>
+    <p><strong>Best for:</strong> people who want to start fast and don't enjoy technical setup. Teachable's free plan and Thinkific's free tier are both legitimate starting points.</p>
+    <h3>Option B: Build Your Own (The CourseForge Method)</h3>
+    <p>This is exactly what I did — a custom HTML website hosted on Vercel with Stripe for payments. Your course content lives on your own pages. You have complete control.</p>
+    <p><strong>Pros:</strong> No monthly platform fees, complete brand control, you own everything, infinite customisation, the process of building it gives you knowledge worth teaching, and it's genuinely impressive to prospective students.</p>
+    <p><strong>Cons:</strong> More upfront setup time (a few days), requires following the steps in this module carefully, no built-in student community features.</p>
+    <p><strong>Best for:</strong> people who want to own their platform, have a smaller budget, or are building a course about course creation itself (meta-credibility: you literally built the system).</p>
+    <h3>The Decision Framework</h3>
+    <p>If you want to launch in the next 48 hours with zero technical setup: use Teachable's free plan. If you want to own your platform, avoid monthly fees, and have the experience of building something from scratch: follow the rest of Module 4 and do it the CourseForge way.</p>
+    <p>The rest of this module covers the build-your-own approach in full detail. Even if you end up using Kajabi or Teachable eventually, understanding how your website works makes you a better course creator and marketer.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m4l1" onclick="markDone('m4l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l2',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L2 -->
+<div class="panel" id="panel-m4l2">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">Setting Up GitHub</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>GitHub is where your website files live. Think of it as a folder in the cloud that stores your website code and automatically sends updates to your live site whenever you make a change. You don't need to understand how it works deeply — you just need to know how to use it.</p>
+    <h3>Creating Your Account</h3>
+    <p>Go to <strong>github.com</strong> and click Sign Up. Use your email, create a password, and choose a username. Verify your email when prompted. The free plan is everything you need.</p>
+    <h3>Creating a New Repository</h3>
+    <p>A repository (or "repo") is essentially a folder that holds all your website files. Once logged in, click the <strong>+</strong> icon in the top right corner and select <strong>New repository</strong>. Name it something like "my-course-site". Set it to <strong>Public</strong> (required for Vercel's free plan). Tick "Add a README file." Click <strong>Create repository</strong>.</p>
+    <h3>Uploading Your Files</h3>
+    <p>Your course website needs two files minimum: <strong>index.html</strong> (your sales page) and <strong>course.html</strong> (your course content). On your repository page, click <strong>Add file</strong> → <strong>Upload files</strong>. Drag and drop your HTML files or click "choose your files" and select them. Scroll down and click <strong>Commit changes</strong>.</p>
+    <h3>Doing This From Your Phone</h3>
+    <p>The GitHub mobile app doesn't support file uploads easily. Use Safari or Chrome on your phone to go to github.com — the browser version has the full "Upload files" option. When the upload page prompts you to choose files, navigate to your Files app and select your HTML files. Commit when done.</p>
+    <div class="tip"><div class="tip-lbl">🎯 Making Changes Later</div><p>Whenever you update your website — changing text, prices, adding lessons — you repeat this same upload process. Upload the new version of your file to GitHub, commit it, and Vercel (covered in the next lesson) automatically deploys the change to your live site within 30 seconds. That's the entire update process.</p></div>
+    <div class="steps-box"><h4>GitHub Setup Summary</h4><ol><li><strong>Create account</strong> at github.com</li><li><strong>Create new repository</strong> — public, with README</li><li><strong>Upload your files</strong> — index.html and course.html</li><li><strong>Commit changes</strong> — your files are now in GitHub</li><li><strong>Note your repo URL</strong> — github.com/yourusername/your-repo-name</li></ol></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l1',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l2" onclick="markDone('m4l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l3',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L3 -->
+<div class="panel" id="panel-m4l3">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">Deploying to Vercel</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 7 min</span></div>
+  <div class="lb">
+    <p>Vercel takes the files in your GitHub repository and makes them into a live website on the internet. It's free for personal projects, takes about 5 minutes to set up, and automatically updates your live site every time you push a change to GitHub.</p>
+    <h3>Creating Your Vercel Account</h3>
+    <p>Go to <strong>vercel.com</strong> and click Sign Up. Choose <strong>Continue with GitHub</strong> — this connects Vercel to your GitHub account automatically. No separate password needed.</p>
+    <h3>Importing Your Project</h3>
+    <p>Once logged in, click <strong>Add New Project</strong>. You'll see a list of your GitHub repositories. Find your course site repo and click <strong>Import</strong>. On the configuration screen, leave all settings as default. Click <strong>Deploy</strong>.</p>
+    <h3>Your Site is Live</h3>
+    <p>Vercel builds and deploys your site in about 60 seconds. When complete, you'll see a success screen with a live URL — something like <strong>your-project.vercel.app</strong>. Click "Visit" to see your live website. That URL is your live, public website address.</p>
+    <h3>Custom Domains</h3>
+    <p>Your free Vercel URL looks like <em>yoursite.vercel.app</em>. For a more professional presence, add a custom domain — like <em>yourcourse.com</em>. Buy a domain from Namecheap (~$15/year) or GoDaddy. In Vercel, go to your project → Settings → Domains, add your domain, and follow the DNS configuration steps. It takes about 10 minutes and makes your site look significantly more credible.</p>
+    <h3>How Auto-Deployment Works</h3>
+    <p>Whenever you update a file in your GitHub repository, Vercel detects the change and automatically deploys the updated version. There's nothing manual to do — every commit to GitHub = a live update within 30 seconds. This is the system I use. It's completely free and works flawlessly.</p>
+    <div class="callout"><div class="callout-lbl">💡 Troubleshooting 404 Errors</div><p>If your site shows a 404 error after deploying, check that your main file is named exactly <strong>index.html</strong> (lowercase, not Index.html or INDEX.HTML). Vercel looks for this specific filename as the homepage. If that's correct and you still get a 404, check your vercel.json configuration file.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l2',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l3" onclick="markDone('m4l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l4',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L4 -->
+<div class="panel" id="panel-m4l4">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">Setting Up Stripe</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>Stripe is the payment processor that handles all money movement on your site. When a student pays for your course, Stripe processes the card, takes a small fee (2.9% + 30¢ per transaction), and deposits the rest in your bank account. Setting it up correctly is critical — this is how you get paid.</p>
+    <h3>Creating Your Stripe Account</h3>
+    <p>Go to <strong>stripe.com</strong> and click Start Now. Enter your email and create a password. Verify your email. You'll land in the Stripe Dashboard — this is where all your payment data lives.</p>
+    <h3>Activating Your Account</h3>
+    <p>Stripe starts you in "test mode" — you can see how everything works but no real money moves. To take real payments, you need to activate your account by providing identity verification. Click <strong>Activate your account</strong> in the dashboard and provide: your full legal name, date of birth, home address, phone number, and bank account details for payouts.</p>
+    <p>Stripe is regulated as a financial services company and must verify your identity before allowing real transactions. This process typically takes 1–2 business days for approval.</p>
+    <h3>Important: Age Requirements</h3>
+    <p>Stripe requires account holders to be 18 or over. If you're under 18, you have two options: have a parent or legal guardian create the Stripe account in their name (the money goes to their bank account and they transfer it to you), or wait until you turn 18. Both are completely legitimate approaches — many young entrepreneurs launch with a parent's support.</p>
+    <h3>Getting Your API Keys</h3>
+    <p>In the Stripe Dashboard, go to <strong>Developers → API Keys</strong>. You'll see two keys: a Publishable Key (starts with pk_) and a Secret Key (starts with sk_). The Secret Key is what connects your website's backend to Stripe. Copy it — you'll need it in the next lesson. <strong>Never share your Secret Key publicly or commit it to GitHub.</strong></p>
+    <h3>Test Mode vs Live Mode</h3>
+    <p>Use test mode (keys starting with pk_test_ and sk_test_) while building and testing. Switch to live mode (pk_live_ and sk_live_) when you're ready to take real payments. In test mode, use card number 4242 4242 4242 4242 with any future expiry and any CVC to simulate a successful payment.</p>
+    <div class="warn"><div class="warn-lbl">⚠️ Protect Your Secret Key</div><p>Your Stripe Secret Key gives anyone who has it full access to your payment account. Store it only in Vercel's Environment Variables (covered in the next lesson) — never in your HTML files, GitHub repository, or anywhere publicly accessible.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l3',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l4" onclick="markDone('m4l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l5',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L5 -->
+<div class="panel" id="panel-m4l5">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 5</div>
+  <h1 class="lesson-title">Connecting Payments to Your Site</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 11 min</span></div>
+  <div class="lb">
+    <p>This is where it all comes together — connecting your Vercel website to Stripe so that when someone clicks "Buy," they go through a real checkout and you receive real money. This is handled through serverless functions: small pieces of code that run on Vercel's servers when called.</p>
+    <h3>How the Payment Flow Works</h3>
+    <ol>
+      <li>Student clicks "Buy" on your sales page</li>
+      <li>Your website calls a serverless function on Vercel</li>
+      <li>That function uses your Stripe Secret Key to create a Checkout Session</li>
+      <li>Stripe returns a URL for their hosted checkout page</li>
+      <li>The student is redirected to Stripe's secure checkout page</li>
+      <li>Student completes payment on Stripe's servers (you never touch their card data)</li>
+      <li>Stripe redirects back to your site with a session ID</li>
+      <li>Your site verifies the payment with a second serverless function</li>
+      <li>If verified, the student gets access to your course content</li>
+    </ol>
+    <h3>The Two Serverless Functions You Need</h3>
+    <h4>1. create-checkout-session.js</h4>
+    <p>This function runs when the student clicks "Buy." It creates a Stripe Checkout Session with your product name, price, and success/cancel URLs, then returns the Stripe-hosted checkout page URL. Your website redirects the student there.</p>
+    <h4>2. verify-session.js</h4>
+    <p>This function runs when Stripe redirects the student back to your site after payment. It takes the session ID from the URL, checks with Stripe that it was actually paid, and returns true or false. Your website uses this to decide whether to show or hide the course content.</p>
+    <h3>Adding Your Stripe Key to Vercel</h3>
+    <p>In your Vercel Dashboard: go to your project → Settings → Environment Variables. Add a new variable: Name: <strong>STRIPE_SECRET_KEY</strong>, Value: your sk_live_ key from Stripe. Set it to apply to all environments (Production, Preview, Development). Save and redeploy. This is how your serverless functions access your Stripe key without it ever appearing in your code.</p>
+    <h3>Setting the Price</h3>
+    <p>In your create-checkout-session.js file, the price is set as unit_amount in cents. $27 = 2700. $97 = 9700. $197 = 19700. To change your course price, update this number and push the change to GitHub — Vercel deploys it instantly.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The Full Working Code</div><p>The complete, working code for both serverless functions and the full website HTML is included as a downloadable resource with this course. You don't need to write it from scratch — download it, replace the placeholder content with your own, upload to GitHub, and your site is live.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l4',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l5" onclick="markDone('m4l5',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l6',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L6 -->
+<div class="panel" id="panel-m4l6">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 6</div>
+  <h1 class="lesson-title">Adding a Paywall</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>A paywall locks your course content behind the payment. Visitors can see the sales page and a preview of the course — but the full content only unlocks after a successful payment. Here's how it works technically and how to implement it.</p>
+    <h3>The Approach: Session-Based Unlocking</h3>
+    <p>When a student successfully pays, your verify-session function confirms the payment and your JavaScript stores a flag in the browser's sessionStorage: <code>sessionStorage.setItem('unlocked', 'true')</code>. When the course page loads, it checks for this flag. If present — course unlocks. If absent — course stays locked.</p>
+    <h3>The Lock Overlay</h3>
+    <p>On your course page, you add a semi-transparent overlay over the lesson content with a "Unlock Access" button. The overlay has a high z-index (sits on top of everything) and is set to display:none when the unlock flag is present. When unlocked, the overlay disappears and all lesson content becomes interactive.</p>
+    <h3>The Limitation: SessionStorage Resets</h3>
+    <p>SessionStorage clears when the browser tab is closed. This means a student who paid and comes back the next day will find the course locked again. For a simple $27 course, the cleanest solution is: after payment, redirect students to a dedicated course URL that you email them. That URL is the course page — no lock needed because only paid students have it.</p>
+    <h3>A More Robust Approach</h3>
+    <p>For a more secure system: after payment confirmation, send the student an email containing their unique course access URL. That URL includes a token that your verify-session function validates. This is what most course platforms do automatically — and what you'd build if you wanted to scale this into a proper platform. For version 1 of your course, the session-based approach is perfectly adequate.</p>
+    <div class="callout"><div class="callout-lbl">💡 Practical Tip</div><p>The most battle-tested approach for a first course: use Stripe's built-in success URL to redirect students straight to your course.html page. That page has no paywall — it's a direct URL that only paying students are redirected to. Simple, effective, and requires zero additional code.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l5',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l6" onclick="markDone('m4l6',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m4l7',null,'sec-m4')">Next →</button>
+  </div>
+</div>
+
+<!-- M4L7 -->
+<div class="panel" id="panel-m4l7">
+  <div class="breadcrumb">Module 04 <span>›</span> Lesson 7</div>
+  <h1 class="lesson-title">Testing Everything Before Launch</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">🌐 Website</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>Never launch without testing the complete payment flow end-to-end. A broken checkout on launch day is more damaging than any marketing could overcome — it destroys trust at the exact moment someone is ready to buy. Test everything methodically before you open for sales.</p>
+    <h3>The Pre-Launch Testing Checklist</h3>
+    <div class="steps-box"><h4>Test Every Single One of These</h4><ol><li><strong>Load your sales page</strong> — does everything display correctly on mobile?</li><li><strong>Click every CTA button</strong> — do they all open the checkout modal or redirect to Stripe?</li><li><strong>Complete a test purchase</strong> — use Stripe test card 4242 4242 4242 4242</li><li><strong>Confirm redirect works</strong> — after test payment, does it redirect to your course?</li><li><strong>Test on multiple devices</strong> — iPhone, Android, iPad, desktop</li><li><strong>Test on multiple browsers</strong> — Safari, Chrome, Firefox</li><li><strong>Test a failed payment</strong> — use card 4000 0000 0000 0002 (always declines)</li><li><strong>Check Stripe dashboard</strong> — does the test payment appear there?</li><li><strong>Test the cancelled payment flow</strong> — click cancel at checkout, does it handle gracefully?</li><li><strong>Check all course lessons load</strong> — click every lesson in the sidebar</li></ol></div>
+    <h3>Common Issues and Fixes</h3>
+    <p><strong>"404 Not Found" after payment:</strong> Your success_url in create-checkout-session.js is pointing to the wrong address. Update it to match your exact Vercel URL.</p>
+    <p><strong>Stripe button doesn't respond:</strong> Your STRIPE_SECRET_KEY environment variable isn't set in Vercel, or you haven't redeployed after setting it. Redeploy your project.</p>
+    <p><strong>Site looks broken on mobile:</strong> You're missing a viewport meta tag. Make sure your HTML includes: &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+    <p><strong>Lessons don't show after payment:</strong> Your verify-session function is returning an error. Check the function logs in Vercel Dashboard → your project → Functions.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Module 4 Complete</div><p>Your website is live. Payments work. Everything has been tested. This is genuinely impressive — you've built something most people never do. Module 5 is where we make sure you're charging the right price and launching with a strategy that generates real sales from day one.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m4l6',null,'sec-m4')">← Previous</button>
+    <button class="done-btn" id="db-m4l7" onclick="markDone('m4l7',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m5l1',null,'sec-m5');openSec('sec-m5')">Module 5 →</button>
+  </div>
+</div>
+
+<!-- M5L1 -->
+<div class="panel" id="panel-m5l1">
+  <div class="breadcrumb">Module 05 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">Pricing Psychology</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💰 Launch</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>Most course creators undercharge. Dramatically. And counterintuitively, underpricing often reduces sales rather than increasing them — because a low price signals low value. Understanding pricing psychology is the fastest way to increase your revenue without changing anything else about your course.</p>
+    <h3>Price Signals Value</h3>
+    <p>When someone sees a $9 course, their brain immediately asks "what's wrong with it?" When they see a $297 course, they assume it must be worth $297 or more. Your price is a communication about the quality and seriousness of your product before anyone has seen a single lesson. Price accordingly.</p>
+    <h3>Price Based on Outcome, Not Hours</h3>
+    <p>The amount of work you put into a course is completely irrelevant to what you should charge. What matters is: what is the outcome worth to the student? A course that helps someone start a business that earns $50,000/year is worth far more than $97 — even if it took you a week to make. A course that teaches a nice-to-have skill with no financial implications can't command that premium — even if it took six months to build.</p>
+    <h3>The Price Tiers That Work</h3>
+    <p><strong>$27–$97:</strong> Entry-level. Great for first courses, building a student base, and validating your teaching before going premium. Low barrier means more volume — useful for collecting testimonials and case studies.</p>
+    <p><strong>$197–$497:</strong> The signature course sweet spot. Buyers at this level are serious students — low refund rates, high completion rates, strong testimonials. This is where most established course creators live.</p>
+    <p><strong>$497–$1,997:</strong> Premium courses with significant depth, community access, templates, and direct coaching elements. Requires stronger social proof and a more sophisticated sales process.</p>
+    <p><strong>$2,000+:</strong> Masterminds, group coaching, and intensive programs. Sold through conversation, not checkout pages.</p>
+    <h3>Payment Plans Increase Sales</h3>
+    <p>Offering a payment plan dramatically increases the number of people who can say yes. A $297 course offered as "3 payments of $110" typically outsells the lump sum by 30–50%. The total amount you receive is slightly higher (3 × $110 = $330 vs $297) — you're compensated for offering the plan. Most course platforms handle payment plans automatically.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The Rule of 10x</div><p>Your course price should be no more than 10% of the value your course delivers. If your course helps someone earn an extra $3,000, you can charge $300 and it's an obvious yes for the student. If your course saves someone $5,000 in professional services fees, $500 is a bargain. Think about the outcome's value first — then price at 5–10% of that.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m5l1" onclick="markDone('m5l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m5l2',null,'sec-m5')">Next →</button>
+  </div>
+</div>
+
+<!-- M5L2 -->
+<div class="panel" id="panel-m5l2">
+  <div class="breadcrumb">Module 05 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">Positioning Your Course</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💰 Launch</span><span class="ltag ltag-time">⏱ 8 min</span></div>
+  <div class="lb">
+    <p>Positioning is how your course exists in the mind of a potential student relative to every other option they're aware of. Great positioning makes price irrelevant — because there's nothing else quite like your course. Here's how to position effectively.</p>
+    <h3>The Positioning Statement</h3>
+    <p>Complete this: <em>"For [specific person] who wants [specific outcome], [your course name] is the [category] that [key benefit] because [reason to believe]."</em></p>
+    <p>Example: "For freelancers who want their first $5,000 month, The Freelance Accelerator is the only course that provides a step-by-step outreach system proven to land clients within 30 days — because it's built on 3 years of personal freelancing experience and 200+ student results."</p>
+    <p>Every word in your marketing — sales page, social media, email — should reinforce this positioning statement.</p>
+    <h3>Category Design</h3>
+    <p>The most powerful positioning creates a new category rather than competing in an existing one. Instead of "an online marketing course" (competing with thousands), be "the first marketing course built specifically for trades businesses." You're not better at the same thing — you're the only one doing this specific thing. That's an unwinnable competitive position.</p>
+    <h3>The Comparison Stack</h3>
+    <p>On your sales page, compare your course to the alternatives your students might consider: hiring a consultant ($2,000–$5,000), buying a competitor's course ($197–$497), figuring it out themselves (6+ months). Your course at $97 looks very different when compared to those alternatives. Don't be shy about making these comparisons explicit.</p>
+    <h3>Social Proof as Positioning</h3>
+    <p>Testimonials don't just build trust — they reinforce your positioning. "I launched my course in 11 days using this guide" is a positioning statement as much as it's social proof. It confirms the specific, fast outcome your course promises. Curate testimonials that match your positioning statement, not just generic praise.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m5l1',null,'sec-m5')">← Previous</button>
+    <button class="done-btn" id="db-m5l2" onclick="markDone('m5l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m5l3',null,'sec-m5')">Next →</button>
+  </div>
+</div>
+
+<!-- M5L3 -->
+<div class="panel" id="panel-m5l3">
+  <div class="breadcrumb">Module 05 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">Building Your Value Stack</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💰 Launch</span><span class="ltag ltag-time">⏱ 7 min</span></div>
+  <div class="lb">
+    <p>A value stack is the collection of everything included in your offer — presented in a way that makes the price feel like an obvious bargain. Done well, it shifts the student's question from "is this worth $97?" to "how is this only $97?"</p>
+    <h3>How to Build a Value Stack</h3>
+    <p>List every component of your offer — the main course, every module, every bonus, any templates, workbooks, checklists, community access. For each component, assign a dollar value based on what it would cost to get that value elsewhere. Be honest and defensible — not inflated to the point of absurdity.</p>
+    <p>Example: Main course ($497 value) + Launch Email Templates ($97 value) + Niche Validation Workbook ($47 value) + Lifetime Access ($97 value) = Total value $738. Your price: $97.</p>
+    <h3>What Makes a Bonus Worth Including</h3>
+    <p>A bonus earns its place in your value stack only if it genuinely extends the value of the course — not if it's padding to make the offer look bigger. One focused, relevant bonus is worth more in student perception than five tangentially related extras. Quality over quantity.</p>
+    <h3>Displaying Your Value Stack</h3>
+    <p>Your sales page should list every component with its individual value, show the total, then reveal your actual price. The visual contrast between total value and your price is powerful. Use this on your main pricing section, in emails, and in social media posts promoting the course.</p>
+    <h3>The Anchor Price</h3>
+    <p>Show a crossed-out "original price" above your actual price. This anchors the student's perception of value. "Normal price $197, launch price $97" makes $97 feel like a deal even though your student has never paid more than $97 for it. This is standard practice across the industry and genuinely does increase conversion rates.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m5l2',null,'sec-m5')">← Previous</button>
+    <button class="done-btn" id="db-m5l3" onclick="markDone('m5l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m5l4',null,'sec-m5')">Next →</button>
+  </div>
+</div>
+
+<!-- M5L4 -->
+<div class="panel" id="panel-m5l4">
+  <div class="breadcrumb">Module 05 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">The 7-Day Launch Sequence</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💰 Launch</span><span class="ltag ltag-time">⏱ 12 min</span></div>
+  <div class="lb">
+    <p>A launch sequence is a series of emails and social posts sent over a defined period that builds anticipation, delivers value, and creates urgency around buying your course. Most of your launch revenue will come from this sequence — not from putting a buy button on a page and waiting.</p>
+    <h3>The 7-Day Framework</h3>
+    <h4>Day 1 — The Announcement</h4>
+    <p>Email your list and post on social media. Announce that your course is opening. Share your story — why you built this, who it's for, what it delivers. Don't oversell yet. Create curiosity and anticipation. Include a link to your sales page. End with: "Doors open for 7 days only."</p>
+    <h4>Day 2 — The Problem</h4>
+    <p>Write about the specific problem your course solves. Be specific and empathetic — show that you understand their frustration in detail. Don't mention your course at all until the last paragraph, where you reference it briefly. The goal is to make the reader feel seen and understood.</p>
+    <h4>Day 3 — Free Value</h4>
+    <p>Give away a genuinely useful piece of content — a quick tip, a mini lesson, a template, or a framework from inside your course. This builds trust, demonstrates your expertise, and makes the reader think "if the free stuff is this good, the paid course must be excellent."</p>
+    <h4>Day 4 — Social Proof</h4>
+    <p>Share testimonials, case studies, or your own results. If you're launching your first course, use your own story as the proof of concept. Share any pre-sale feedback, beta student results, or validation research responses. Real specifics — names, numbers, timeframes — build credibility.</p>
+    <h4>Day 5 — Objection Handling</h4>
+    <p>Address the most common reasons people haven't bought yet: "I don't have time," "I'm not technical," "I'm not sure it will work for my situation." Write an email that anticipates each objection and addresses it directly. A well-crafted objection-handling email consistently converts fence-sitters who've been thinking about it all week.</p>
+    <h4>Day 6 — Urgency</h4>
+    <p>Remind your audience that the course closes tomorrow. Share any fast-action bonuses expiring at close. Note how many spots are remaining if you're limiting enrolment. The goal is to give people who intended to buy a genuine reason to act today instead of "later."</p>
+    <h4>Day 7 — Last Chance</h4>
+    <p>Send two emails: one in the morning ("closes tonight") and one in the evening ("closing in 2 hours"). Last-chance emails consistently drive 30–40% of total launch revenue — people who've been considering it all week finally take action when the deadline is real and imminent. Close the cart at the time you said you would — credibility is more valuable than a few extra sales.</p>
+    <div class="tip"><div class="tip-lbl">🎯 Real Urgency Only</div><p>Only use urgency that is real. Fake countdown timers that reset, false scarcity claims, or "closing forever" offers that never close permanently destroy trust when people notice — and they always notice. Real deadlines, real limits, real consequences for missing out. That's what builds a long-term reputation.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m5l3',null,'sec-m5')">← Previous</button>
+    <button class="done-btn" id="db-m5l4" onclick="markDone('m5l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m5l5',null,'sec-m5')">Next →</button>
+  </div>
+</div>
+
+<!-- M5L5 -->
+<div class="panel" id="panel-m5l5">
+  <div class="breadcrumb">Module 05 <span>›</span> Lesson 5</div>
+  <h1 class="lesson-title">Your First 10 Students</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">💰 Launch</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>Your first 10 students are the most important. They give you testimonials, real feedback, and proof that your course works. Getting these first 10 is a manual, personal process — not a marketing funnel. Here's exactly where to find them.</p>
+    <h3>Your Existing Network First</h3>
+    <p>Send a personal message — not a group post, a personal message — to every person in your life who might benefit from your course or who knows someone who would. Be direct: "I've built a course on [topic] and I'm looking for 10 people to go through it first at a reduced price in exchange for honest feedback. Do you know anyone who might be interested?" Personal outreach converts at 10–20x the rate of broadcast posts.</p>
+    <h3>Relevant Online Communities</h3>
+    <p>Find 3–5 online communities (Facebook groups, Reddit, Discord servers, forums) where your ideal student hangs out. Spend a week genuinely participating — answering questions, adding value, building a presence. Then, when appropriate, share that you've built something that addresses the most common problems you see in the community. This soft, value-first approach gets far more traction than dropping a link and asking people to buy.</p>
+    <h3>Content-First Approach</h3>
+    <p>Create 3–5 pieces of free content (TikTok videos, Instagram posts, YouTube shorts, blog posts) on a topic covered in your course. At the end of each, mention that you have a full course on this topic. This approach takes longer but generates warm leads — people who've already received value from you and trust your knowledge.</p>
+    <h3>The Beta Student Offer</h3>
+    <p>Offer your first cohort a "beta" discount of 30–50% in exchange for two things: their genuine engagement with the course and a written testimonial at the end. This is a standard industry practice. You get case studies that fuel future launches. They get discounted access to something that will earn them far more than the discount saved.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Module 5 Complete</div><p>You know how to price, position, and launch your course properly. One module left — and it's the one that keeps sales coming in after launch day. Module 6: marketing and scaling.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m5l4',null,'sec-m5')">← Previous</button>
+    <button class="done-btn" id="db-m5l5" onclick="markDone('m5l5',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l1',null,'sec-m6');openSec('sec-m6')">Module 6 →</button>
+  </div>
+</div>
+
+<!-- M6L1 -->
+<div class="panel" id="panel-m6l1">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 1</div>
+  <h1 class="lesson-title">The Content Marketing Playbook</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 11 min</span></div>
+  <div class="lb">
+    <p>Content marketing is the long game. Instead of paying for attention through ads, you earn it by consistently creating content that is genuinely useful to your ideal student. Done right, it builds a compounding asset — content that attracts new students months or years after you created it.</p>
+    <h3>The Core Principle: Teach What You Sell</h3>
+    <p>Your free content should be mini versions of your paid course. If your course teaches course creation, your free content should teach course creation tips. This builds trust, demonstrates your expertise, attracts the exact people who will want your course, and makes the "upgrade to the full course" pitch feel natural rather than pushy.</p>
+    <h3>The Content Pillar Framework</h3>
+    <p>Rather than creating random content, build around 3–4 "content pillars" — recurring themes that are all connected to your course topic. For a course creation course, pillars might be: niche selection, technical setup, marketing, and student results. Every piece of content you create fits under one of these pillars. This gives your account a coherent identity and makes it easy for the algorithm to understand what you're about.</p>
+    <h3>The Content Formats That Work</h3>
+    <h4>Educational Posts</h4>
+    <p>"5 mistakes people make when choosing a course niche" — these perform well because they're genuinely useful and highly shareable. Format them as carousel posts on Instagram, thread posts on Twitter/X, or short-form video on TikTok.</p>
+    <h4>Behind-the-Scenes</h4>
+    <p>"I built this course website from my phone" — personal, relatable, and different from the polished content most creators put out. Authenticity performs exceptionally well on social media in 2024/25 because most content is over-produced.</p>
+    <h4>Student Results</h4>
+    <p>Celebrating your students' wins is the most powerful content type for course creators. It proves your course works and inspires potential students to imagine their own result. Get permission from students before sharing and always tag them if they're happy to be tagged.</p>
+    <h4>Myth-Busting</h4>
+    <p>"You don't need 10,000 followers to launch a course" — challenging common misconceptions builds credibility, attracts engagement, and positions you as someone who knows what they're actually talking about.</p>
+    <h3>The Consistency Principle</h3>
+    <p>Posting once a week for a year beats posting every day for a month and burning out. Build a sustainable content cadence — 3–5 posts per week is ideal, but 3 per week maintained consistently will outperform 7 per week for two months then nothing. The algorithm rewards consistency. So does your audience.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="done-btn" id="db-m6l1" onclick="markDone('m6l1',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l2',null,'sec-m6')">Next →</button>
+  </div>
+</div>
+
+<!-- M6L2 -->
+<div class="panel" id="panel-m6l2">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 2</div>
+  <h1 class="lesson-title">TikTok &amp; Instagram Organic Strategy</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 12 min</span></div>
+  <div class="lb">
+    <p>Organic social media is the most powerful free marketing channel available to course creators right now. TikTok in particular gives new accounts genuine reach — the algorithm shows your content to people who don't follow you, meaning you can get in front of thousands of ideal students without spending a single dollar on ads.</p>
+    <h3>TikTok: The Algorithm Advantage</h3>
+    <p>TikTok's algorithm is interest-based, not follower-based. A new account with zero followers can post a video that gets 100,000 views if the content resonates with a specific audience. This is fundamentally different from Instagram or YouTube where follower count drives reach. For new course creators, TikTok is the most level playing field available.</p>
+    <h3>What to Post on TikTok</h3>
+    <h4>The Hook is Everything</h4>
+    <p>The first 1–3 seconds determine whether people watch or scroll. Start with the most compelling, surprising, or useful part of your content — not an intro, not your name, not "hey guys." "I built a course website from my phone in 4 days" is a hook. "Today I'm going to talk about building a course website" is not.</p>
+    <h4>Content Types That Perform</h4>
+    <ul>
+      <li><strong>Tutorial/tip format:</strong> "3 mistakes new course creators make (and how to fix them)"</li>
+      <li><strong>Transformation story:</strong> "How I went from no website to taking payments online in one week"</li>
+      <li><strong>Day-in-the-life:</strong> Show your process, your workspace, your results</li>
+      <li><strong>Response videos:</strong> Answer common questions your audience asks in comments</li>
+      <li><strong>Duets and stitches:</strong> React to content in your niche with your perspective</li>
+    </ul>
+    <h3>Instagram Strategy</h3>
+    <p>Instagram rewards consistent, high-quality content and genuine community building. Reels get significantly more reach than static posts. Stories build intimacy and daily connection with your existing audience. The profile grid is your first impression — make it cohesive and clearly communicate who you are and what you offer.</p>
+    <p>Use Instagram for: building your brand aesthetic, sharing longer-form educational carousels, showcasing student results, and driving people to your email list through your link in bio.</p>
+    <h3>The Link in Bio System</h3>
+    <p>You can only have one clickable link across TikTok and Instagram. Use a link-in-bio tool (Linktree, free) or a simple page on your own website that links to: your course sales page, your email list signup, and any free resources. Drive every piece of content back to this single URL.</p>
+    <h3>Growth Timeline Reality</h3>
+    <p>Expect 3–6 months of consistent posting before you see meaningful organic results. This is normal and not a reason to stop. The compounding effect of a growing account means month 6 is exponentially more valuable than month 1. Track your analytics weekly to understand which content performs and double down on what works.</p>
+    <div class="tip"><div class="tip-lbl">🎯 The 80/20 Content Rule</div><p>80% of your content should be genuinely educational, entertaining, or valuable with no sales pitch. 20% can mention your course. This ratio keeps your audience engaged and makes the occasional sales post feel natural rather than intrusive.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m6l1',null,'sec-m6')">← Previous</button>
+    <button class="done-btn" id="db-m6l2" onclick="markDone('m6l2',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l3',null,'sec-m6')">Next →</button>
+  </div>
+</div>
+
+<!-- M6L3 -->
+<div class="panel" id="panel-m6l3">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 3</div>
+  <h1 class="lesson-title">Building Your Email List</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>Your email list is the most valuable marketing asset you own. Unlike social media followers — which are rented from a platform that could change its algorithm tomorrow — your email list belongs to you. When you send an email, it lands in someone's inbox. No algorithm between you and your audience.</p>
+    <h3>Why Email Beats Social Media for Selling</h3>
+    <p>The average organic reach of a social media post is 2–5% of your followers. A well-crafted email to a warm list reaches 100% of recipients and typically sees 25–50% open rates from engaged subscribers. For direct selling — getting people to click and buy — email consistently outperforms every social media channel.</p>
+    <h3>The Lead Magnet</h3>
+    <p>A lead magnet is a free, immediately valuable resource you give someone in exchange for their email address. For a course creator, excellent lead magnets include: a free mini lesson from inside your course, a checklist or template relevant to your topic, a free short guide covering one specific pain point, or a quiz with personalised results. Your lead magnet should be so good that people feel slightly guilty getting it for free — and curious enough about your paid course to want more.</p>
+    <h3>Email Marketing Tools</h3>
+    <p><strong>ConvertKit (now Kit)</strong> — the industry standard for course creators. Free up to 1,000 subscribers. Excellent automation, landing pages, and integration with most course platforms. This is what most serious course creators use.</p>
+    <p><strong>Mailchimp</strong> — free up to 500 contacts. Simpler than ConvertKit but lacks some automation features. Good starting option if you want the most basic possible setup.</p>
+    <p><strong>Klaviyo</strong> — more powerful but more complex. Better suited to eCommerce. Overkill for a first course.</p>
+    <h3>Your Welcome Sequence</h3>
+    <p>The first 5 emails after someone joins your list are the most important. They set expectations, build the relationship, and prime the subscriber to buy. A strong welcome sequence: Email 1 (immediately) — deliver the lead magnet + who you are. Email 2 (Day 2) — your story and why you created your course. Email 3 (Day 4) — your single best piece of educational content. Email 4 (Day 6) — a student result or case study. Email 5 (Day 8) — introduce your course naturally. This sequence converts new subscribers at 2–3x the rate of no sequence at all.</p>
+    <h3>Growing Your List</h3>
+    <p>Add an email capture form to your website — either a popup, a form at the bottom of your sales page, or both. Drive social media followers to your lead magnet. Mention your free resource at the end of every content piece. Partner with other creators in complementary niches for newsletter swaps (covered in the affiliates lesson). A list of 1,000 genuinely interested subscribers is worth more than 50,000 random social media followers.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m6l2',null,'sec-m6')">← Previous</button>
+    <button class="done-btn" id="db-m6l3" onclick="markDone('m6l3',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l4',null,'sec-m6')">Next →</button>
+  </div>
+</div>
+
+<!-- M6L4 -->
+<div class="panel" id="panel-m6l4">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 4</div>
+  <h1 class="lesson-title">Affiliate Partnerships</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 9 min</span></div>
+  <div class="lb">
+    <p>Affiliate marketing is one of the highest-leverage growth channels available to course creators. Instead of building all your audience yourself, you leverage other people's audiences by giving them a financial incentive to promote your course. When someone they refer buys your course, the affiliate gets a commission. You get a sale you wouldn't have had otherwise.</p>
+    <h3>How Affiliate Programs Work</h3>
+    <p>You set a commission rate — typically 20–40% for digital courses. You give each affiliate a unique referral link. When someone clicks that link and buys your course, the sale is attributed to the affiliate and they receive their commission. Most course platforms handle this automatically. For a custom setup like this course guide, tools like ThriveCart or SendOwl can manage affiliate tracking.</p>
+    <h3>Finding Affiliates</h3>
+    <h4>Complementary Course Creators</h4>
+    <p>Find creators in adjacent niches whose audience would benefit from your course. Someone who teaches content writing could be a natural affiliate for a course on building a personal brand. Reach out with a personalised message, explain why your course serves their audience, and offer them an affiliate partnership. Keep it simple — most affiliates don't want complicated arrangements.</p>
+    <h4>Newsletter Owners</h4>
+    <p>Newsletter writers with engaged lists in your niche are excellent affiliates. A single mention in a trusted newsletter can drive hundreds of sales. Research newsletters in your space using Substack, Beehiiv, or a Google search for "[your niche] newsletter." Offer a flat fee for a sponsored mention if they don't do commissions, or a revenue share if they prefer that model.</p>
+    <h4>Your Own Students</h4>
+    <p>Happy students are your most authentic affiliates. After completing your course, offer them a referral link. People who genuinely got results from your course are far more persuasive than any paid influencer — because they speak from real experience. Incentivise this with a meaningful commission (30–40%) and make it easy for them to share.</p>
+    <h3>Setting Your Commission Rate</h3>
+    <p>For a $27 course, 40% commission = $10.80 per sale. That's a small incentive for most affiliates. Consider whether the volume potential makes it worthwhile for them. For courses priced at $97+, 30–40% commissions are genuinely attractive and will get real effort from affiliates. As you build a premium course, affiliates become significantly more motivated.</p>
+    <div class="tip"><div class="tip-lbl">🎯 Give Affiliates What They Need</div><p>Make it easy for affiliates to promote you. Provide: a short description of the course they can copy, their unique referral link, a few testimonials they can share, and key benefit statements. The less work they have to do, the more likely they are to actually promote. Create an "affiliate resource pack" — one document with everything they need.</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m6l3',null,'sec-m6')">← Previous</button>
+    <button class="done-btn" id="db-m6l4" onclick="markDone('m6l4',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l5',null,'sec-m6')">Next →</button>
+  </div>
+</div>
+
+<!-- M6L5 -->
+<div class="panel" id="panel-m6l5">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 5</div>
+  <h1 class="lesson-title">Building an Evergreen Funnel</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 10 min</span></div>
+  <div class="lb">
+    <p>An evergreen funnel is an automated sales system that runs continuously — attracting new students, warming them up, and converting them to buyers, all without you doing anything manually after the initial setup. This is what "passive income" actually looks like in practice.</p>
+    <h3>The Funnel Structure</h3>
+    <ol>
+      <li><strong>Traffic source</strong> — TikTok, Instagram, YouTube, or paid ads drive strangers to your lead magnet</li>
+      <li><strong>Lead magnet landing page</strong> — visitor exchanges email for your free resource</li>
+      <li><strong>Welcome email sequence</strong> — 5–8 emails over 10 days that build trust and introduce your course</li>
+      <li><strong>Course sales email</strong> — at the end of the sequence, present your course offer</li>
+      <li><strong>Checkout page</strong> — student buys and gets instant access</li>
+      <li><strong>Post-purchase sequence</strong> — welcome email, course access, follow-up for testimonials</li>
+    </ol>
+    <p>Once this is built and tested, new students flow through it 24/7 regardless of whether you're working, sleeping, or on holiday.</p>
+    <h3>The Evergreen Webinar</h3>
+    <p>The highest-converting evergreen funnel for courses is an automated webinar. You record a 45–60 minute presentation that teaches a high-value topic and naturally introduces your course at the end. Tools like EverWebinar or WebinarJam run this webinar automatically on a scheduled basis — new registrants sign up, watch at their chosen time, and can buy at the end. Webinar funnels convert cold traffic at 5–15%, dramatically higher than a standard sales page.</p>
+    <h3>Testing and Optimising Your Funnel</h3>
+    <p>The most important metrics in your funnel: Lead magnet landing page conversion rate (aim for 30%+), email open rates (aim for 30%+), email click-through rates (aim for 3%+), and course sales conversion from email sequence (aim for 1–2% of total subscribers). When you find a weak link, focus all your optimisation there first — improving your lowest-performing step has the biggest impact on total sales.</p>
+    <h3>The Content Flywheel</h3>
+    <p>Pair your evergreen funnel with consistent content creation and you create a flywheel: content attracts followers → followers join your email list via lead magnet → email sequence converts subscribers to buyers → buyers become testimonials → testimonials improve your content's social proof → better social proof attracts more followers. Each rotation of this wheel moves faster than the last.</p>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m6l4',null,'sec-m6')">← Previous</button>
+    <button class="done-btn" id="db-m6l5" onclick="markDone('m6l5',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('m6l6',null,'sec-m6')">Next →</button>
+  </div>
+</div>
+
+<!-- M6L6 -->
+<div class="panel" id="panel-m6l6">
+  <div class="breadcrumb">Module 06 <span>›</span> Lesson 6</div>
+  <h1 class="lesson-title">When &amp; How to Run Paid Ads</h1>
+  <div class="lesson-meta"><span class="ltag ltag-mod">📣 Marketing</span><span class="ltag ltag-time">⏱ 11 min</span></div>
+  <div class="lb">
+    <p>Paid advertising is not where you start. It's where you scale something that's already working. The most common expensive mistake in course creation is running ads before you have a proven funnel — you're just paying to find out faster that something is broken. Get your organic strategy working first, then use ads to amplify it.</p>
+    <h3>When You're Ready for Paid Ads</h3>
+    <ul>
+      <li>You have at least 10 paying students with testimonials</li>
+      <li>You've made sales through organic channels (proof of concept)</li>
+      <li>Your sales page converts at 2%+ from warm traffic</li>
+      <li>Your email welcome sequence converts subscribers to buyers</li>
+      <li>You have a budget of at least $500–$1,000 to test with (below this, results are statistically meaningless)</li>
+    </ul>
+    <h3>The Best Platforms for Course Ads</h3>
+    <h4>Meta Ads (Facebook &amp; Instagram)</h4>
+    <p>The largest and most sophisticated advertising platform in the world. Best for: courses with broad appeal, audiences aged 25–55, and anything with strong visual or emotional hooks. Start with a simple campaign targeting a broad audience in your country, aged 25–45, with interests related to your course topic. Let Meta's algorithm find buyers — it's remarkably good at this when given enough budget and time.</p>
+    <h4>TikTok Ads</h4>
+    <p>Lower cost per click than Meta, younger demographic (18–34), and excellent for courses that perform well organically on TikTok. Use your best-performing organic TikToks as ad creatives — content that already resonated with an organic audience will usually perform well as a paid ad.</p>
+    <h4>YouTube Ads</h4>
+    <p>Excellent for longer-form content and higher-priced courses. YouTube viewers have longer attention spans and higher intent than social media browsers. Best for courses priced $197+ where a 2–3 minute explanation of your offer is warranted.</p>
+    <h3>The Test Budget Framework</h3>
+    <div class="steps-box"><h4>How to Run Your First Ad Campaign</h4><ol><li><strong>Set a $10–$15/day budget</strong> — enough to get data, not enough to hurt if it doesn't work</li><li><strong>Run 3 different ad creatives</strong> simultaneously — different hooks, different angles</li><li><strong>Let each run for 3–5 days</strong> without changing anything</li><li><strong>Kill any ad spending $30+ with zero Add to Carts</strong></li><li><strong>Double the budget</strong> of any ad generating profitable sales every 3–4 days</li><li><strong>Never increase budget by more than 20% at once</strong> — larger increases reset the algorithm's learning</li></ol></div>
+    <h3>Understanding ROAS</h3>
+    <p>ROAS (Return on Ad Spend) is your key metric. If you spend $100 on ads and make $200 in course sales, your ROAS is 2x. For a digital course with 80%+ margins, a ROAS of 2x means you're profitable. 3x+ is excellent. Below 1.5x means your funnel or creative needs work before scaling.</p>
+    <div class="callout"><div class="callout-lbl">🎉 Course Complete — You Did It!</div><p>You've made it through all 6 modules. You now understand every element of building, launching, and growing a profitable online course business — from finding your niche to running paid ads at scale. The only thing left is to start. Everything you learned here means nothing until you apply it. Pick one step. Do it today. The rest follows. Good luck — you've got everything you need. 🚀</p></div>
+  </div>
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="show('m6l5',null,'sec-m6')">← Previous</button>
+    <button class="done-btn" id="db-m6l6" onclick="markDone('m6l6',this)">○ Mark Complete</button>
+    <button class="nav-btn primary" onclick="show('welcome',null,'sec-home')" style="background:var(--gold);color:var(--ink);border-color:var(--gold)">🏆 Back to Dashboard</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const TOTAL = 33;
+let done = new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('cf_done')||'[]'));}catch(e){}
+
+function save(){try{localStorage.setItem('cf_done',JSON.stringify([...done]));}catch(e){}}
+
+function updateProgress(){
+  const pct=Math.round((done.size/TOTAL)*100);
+  document.getElementById('topFill').style.width=pct+'%';
+  document.getElementById('topPct').textContent=pct+'% complete';
+  document.querySelectorAll('.s-lesson-btn').forEach(btn=>{
+    const id=btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    if(id&&done.has(id)){btn.classList.add('done');const d=btn.querySelector('.ldot');if(d)d.style.background='var(--green)';}
+  });
+}
+
+function markDone(id,btn){
+  if(done.has(id)){done.delete(id);btn.textContent='○ Mark Complete';btn.classList.remove('done');}
+  else{done.add(id);btn.innerHTML='✓ Completed!';btn.classList.add('done');}
+  save();updateProgress();
+}
+
+function show(id,btnEl,secId){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelectorAll('.s-lesson-btn,.s-mod-btn').forEach(b=>b.classList.remove('active'));
+  if(btnEl)btnEl.classList.add('active');
+  if(secId){const s=document.getElementById(secId);if(s)s.classList.add('open');}
+  if(id==='welcome')document.querySelector('#sec-home .s-mod-btn')?.classList.add('active');
+  closeSidebar();
+  const cb=document.getElementById('db-'+id);
+  if(cb&&done.has(id)){cb.innerHTML='✓ Completed!';cb.classList.add('done');}
+}
+
+function toggleSec(secId,btn){
+  const sec=document.getElementById(secId);
+  const wasOpen=sec.classList.contains('open');
+  document.querySelectorAll('.sidebar-sec').forEach(s=>{if(s.id!=='sec-home')s.classList.remove('open');});
+  if(!wasOpen)sec.classList.add('open');
+}
+
+function openSec(secId){document.getElementById(secId)?.classList.add('open');}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// restore progress on load
+updateProgress();
+done.forEach(id=>{
+  const cb=document.getElementById('db-'+id);
+  if(cb){cb.innerHTML='✓ Completed!';cb.classList.add('done');}
+});
+</script>
+</body>
+</html>
